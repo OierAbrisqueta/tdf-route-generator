@@ -1,0 +1,50 @@
+# ---- Python ----
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+venv/
+.venv/
+env/
+ENV/
+
+# Packaging / build
+build/
+dist/
+*.egg-info/
+
+# ---- Testing / coverage ----
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.nox/
+
+# ---- Logs ----
+*.log
+
+# ---- OS ----
+.DS_Store
+Thumbs.db
+
+# ---- IDEs ----
+.vscode/
+.idea/
+*.iml
+
+# ---- FastAPI / Uvicorn ----
+# (No suelen generar mucho, pero por si acaso)
+*.pid
+
+# ---- Data artifacts (generados por scripts) ----
+data/_*
+data/raw_locations*.txt
+data/geocode_cache*.json
+data/*.sqlite
+data/*.db
+
+# ---- Frontend ----
+node_modules/
+dist/
