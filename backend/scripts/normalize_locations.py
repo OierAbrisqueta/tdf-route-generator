@@ -35,7 +35,7 @@ def clean_name(text):
     text = re.sub(r"\s+", " ", text)
 
     #Remove final comas or misplaced characters
-    text = text.sub(r"[,\s]+$", "", text).strip()
+    text = re.sub(r"[,\s]+$", "", text).strip()
 
     return text
 
@@ -56,9 +56,9 @@ def main():
 
     aliases = {}
     if ALIASES_JSON.exists():
-        aliases = json.loads(ALIASES_JSON.read_text(encoding="uft-8"))
+        aliases = json.loads(ALIASES_JSON.read_text(encoding="utf-8"))
 
-    raw_lines = RAW_TXT.read_text("utf-8").splitlines()
+    raw_lines = RAW_TXT.read_text(encoding = "utf-8").splitlines()
     semicleaned_lines = []
     for ln in raw_lines:
         stripped_line = ln.strip()
@@ -85,16 +85,16 @@ def main():
 
     # Remove duplicate locations
     by_id = {}
-    collisions = {}
+    collisions = []
 
     for location in cleaned_locations:
         loc_id = location["id"]
         if loc_id not in by_id:
-            by_id.append({"id": loc_id, "name": location["name"]})
+            by_id[loc_id] = ({"id": loc_id, "name": location["name"]})
         else:
             collisions.append({"id": loc_id, "name": location["name"]})
 
-    final = sorted(by_id.values(), key=lambda x: x[x["name"].lower()])
+    final = sorted(by_id.values(), key=lambda x: x["name"].lower())
 
     OUT_JSON.write_text(json.dumps(final, ensure_ascii=False, indent=2), encoding="utf-8")
 
