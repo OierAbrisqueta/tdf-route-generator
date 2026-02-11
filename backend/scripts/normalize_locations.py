@@ -1,4 +1,5 @@
 from __future__ import annotations
+
 from pathlib import Path
 import json
 import re
@@ -7,50 +8,56 @@ import unicodedata
 RAW_TXT = Path("data/raw_locations.txt")
 ALIASES_JSON = Path("data/location_aliases.json")
 OUT_JSON = Path("data/locations_normalized.json")
-#OUT_REPORT = Path("data/locations_normalize_report.json")
+OUT_REPORT = Path("data/locations_collisions_report.json")
 
-#Removes accents
-def strip_accents(text):
-    descomposed_text = unicodedata.normalize("NFKD", text)
 
-    #Filters characters and keeps only the "base" letters
-    base_characters = [
-        char for char in descomposed_text
-        if not unicodedata.combining(char)
-    ]
+def strip_accents(text: str) -> str:
+    return "".join(
+        c for c in unicodedata.normalize("NFKD", text)
+        if not unicodedata.combining(c)
+    )
 
-    devolver = "".join(base_characters)
-    return devolver
 
-def clean_name(text):
+def clean_soft(text: str) -> str:
     text = text.strip()
-
-    #Unify apostrophes
     text = text.replace("’", "'").replace("`", "'")
-
-    #Normalize frequent hyphens
     text = text.replace("–", "-").replace("—", "-")
-
-    #Remove double spaces
     text = re.sub(r"\s+", " ", text)
+    return text
 
-    #Remove final comas or misplaced characters
+
+def clean_hard(text: str) -> str:
+    text = clean_soft(text)
+    # si no quieres quitar paréntesis, comenta esta línea:
+    text = re.sub(r"\s*\((.*?)\)\s*", "", text).strip()
     text = re.sub(r"[,\s]+$", "", text).strip()
-
     return text
 
-def slugify(text):
-    text = strip_accents(text)
-    text = text.lower()
 
-    #Mantein letters and numbers, the rest becomes "_"
+def slugify(text: str) -> str:
+    text = strip_accents(text).lower()
     text = re.sub(r"[^a-z0-9]+", "_", text)
-    text = re.sub(r"_+", "_", text)
-    text = text.strip("_")
-
+    text = re.sub(r"_+", "_", text).strip("_")
     return text
 
-def main():
+
+def score_name(name: str, alias_applied: bool) -> tuple:
+    """
+    Decide qué 'name' es mejor como canónico para un id.
+    Preferencias:
+    1) si vino de alias (decisión humana) gana
+    2) nombre con acentos/caracteres no-ascii (más “bonito” para UI) gana
+    3) nombre más largo (suele tener más info) gana
+    """
+    has_non_ascii = any(ord(c) > 127 for c in name)
+    return (
+        1 if alias_applied else 0,
+        1 if has_non_ascii else 0,
+        len(name),
+    )
+
+
+def main() -> None:
     if not RAW_TXT.exists():
         raise SystemExit(f"Missing input file: {RAW_TXT}")
 
@@ -58,48 +65,44 @@ def main():
     if ALIASES_JSON.exists():
         aliases = json.loads(ALIASES_JSON.read_text(encoding="utf-8"))
 
-    raw_lines = RAW_TXT.read_text(encoding = "utf-8").splitlines()
-    semicleaned_lines = []
-    for ln in raw_lines:
-        stripped_line = ln.strip()
+    raw_lines = RAW_TXT.read_text(encoding="utf-8").splitlines()
+    raw_lines = [ln.strip() for ln in raw_lines if ln.strip()]
 
-        #If the line is not an empty string it is added to the cleaned_lines list
-        if (stripped_line):
-            semicleaned_lines.append(stripped_line)
+    # Agrupar por id
+    grouped: dict[str, dict] = {}
+    variants: dict[str, set[str]] = {}
 
-    cleaned_locations = []
-    for ln in semicleaned_lines:
-        raw_clean = clean_name(ln)
-        canonical = aliases.get(raw_clean, raw_clean)
-        canonical = clean_name(canonical)
-        id = slugify(canonical)
+    for raw in raw_lines:
+        soft = clean_soft(raw)
+        aliased = aliases.get(soft, soft)
+        alias_applied = soft in aliases
 
-        cleaned_locations.append(
-            {
-                "raw": ln,
-                "raw_clean": raw_clean,
-                "name": canonical,
-                "id": id
-            }
-        )
+        canonical = clean_hard(aliased)
+        loc_id = slugify(canonical)
+        if not loc_id:
+            continue
 
-    # Remove duplicate locations
-    by_id = {}
-    collisions = []
+        variants.setdefault(loc_id, set()).add(canonical)
 
-    for location in cleaned_locations:
-        loc_id = location["id"]
-        if loc_id not in by_id:
-            by_id[loc_id] = ({"id": loc_id, "name": location["name"]})
+        if loc_id not in grouped:
+            grouped[loc_id] = {"id": loc_id, "name": canonical, "_score": score_name(canonical, alias_applied)}
         else:
-            collisions.append({"id": loc_id, "name": location["name"]})
+            candidate_score = score_name(canonical, alias_applied)
+            if candidate_score > grouped[loc_id]["_score"]:
+                grouped[loc_id] = {"id": loc_id, "name": canonical, "_score": candidate_score}
 
-    final = sorted(by_id.values(), key=lambda x: x["name"].lower())
-
+    # construir salida final
+    final = [{"id": v["id"], "name": v["name"]} for v in grouped.values()]
+    final = sorted(final, key=lambda x: x["name"].lower())
     OUT_JSON.write_text(json.dumps(final, ensure_ascii=False, indent=2), encoding="utf-8")
 
-    if (collisions):
-        print("There are collisions review the location alianses")
+    # construir reporte de ids con múltiples variantes
+    collision_report = {
+        loc_id: sorted(list(names))
+        for loc_id, names in variants.items()
+        if len(names) > 1
+    }
+    OUT_REPORT.write_text(json.dumps(collision_report, ensure_ascii=False, indent=2), encoding="utf-8")
 
 if __name__ == "__main__":
     main()
