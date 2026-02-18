@@ -21,7 +21,7 @@ class LocationRepository:
 
     def load_locations(self) -> None:
         try:
-            with open(self._file_path, 'r', encoding='utf-8') as f:
+            with open(self.file_path, 'r', encoding='utf-8') as f:
                 self.locations = json.load(f)
             self.loaded = True
         except FileNotFoundError:
@@ -59,7 +59,7 @@ class LocationRepository:
             loc_tags = loc.get("tags")
             any: bool = False
             for tag in non_repeated:
-                if loc_tags:
+                if tag in loc_tags:
                     any = True
                     break
             if any:
