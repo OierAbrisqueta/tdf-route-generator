@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import List, Optional
+from typing import List
 
 @dataclass()
 class LocationEntity:
@@ -24,15 +24,14 @@ class LocationEntity:
         )
         return devolver
 
-    @classmethod
-    def to_dict(cls):
+    def to_dict(self):
         devolver = {
-            "id": cls.id,
-            "name": cls.name,
-            "country": cls.country,
-            "lat": cls.lat,
-            "lon": cls.lon,
-            "zone": cls.zone,
-            "tags": cls.tags
+            "id": self.id,
+            "name": self.name,
+            "country": self.country,
+            "lat": self.lat,
+            "lon": self.lon,
+            "zone": self.zone,
+            "tags": self.tags
         }
         return devolver
