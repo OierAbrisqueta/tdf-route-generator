@@ -12,7 +12,7 @@ class LocationEntity:
     tags: List[str]
 
     @classmethod
-    def from_dict(cls, data: dict):
+    def from_dict(cls, data: dict) -> "LocationEntity":
         devolver = cls(
             id = data.get("id", ""),
             name = data.get("name", ""),
