@@ -121,21 +121,21 @@ class RouteGenerator:
         return finish
 
     def _get_mountain_finishes(self) -> List[Dict[str, Any]]:
-        all_locations = self.location_repo.get_locations()
+        all_locations = self.location_repository.get_locations()
         return [
             loc for loc in all_locations
             if loc.get("tags", {}).get("mountain_finish", False)
         ]
 
     def _get_tt_locations(self) -> List[Dict[str, Any]]:
-        all_locations = self.location_repo.get_locations()
+        all_locations = self.location_repository.get_locations()
         return [
             loc for loc in all_locations
             if loc.get("tags", {}).get("tt_ok", False)
         ]
 
     def _get_locations_by_zone(self, zone: str) -> List[Dict[str, Any]]:
-        return self.location_repo.get_by_zone(zone)
+        return self.location_repository.get_by_zone(zone)
 
     def _determine_stage_type(self, stage_num: int, total_stages: int, mountain_bias: float,
             itt_remaining: int, ttt_done: bool) -> StageType:
@@ -230,6 +230,17 @@ class RouteGenerator:
         r = 6371
 
         return r * c
+
+    def _should_have_rest_day(self, stage_num: int, total_stages: int) -> bool:
+        """Determina si debe haber día de descanso después de esta etapa."""
+        # Días de descanso típicos en el Tour: después de etapas 9 y 15
+        if total_stages >= 21:
+            return stage_num in [9, 15]
+        elif total_stages >= 14:
+            return stage_num in [7, 12]
+        elif total_stages >= 7:
+            return stage_num == 5
+        return False
 
     def _is_rest_day(self, stage_num: int) -> bool:
         return stage_num in [9, 15]
