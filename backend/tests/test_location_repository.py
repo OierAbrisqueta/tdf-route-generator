@@ -12,9 +12,9 @@ from backend.app.infrastructure.repositories.LocationRepository import LocationR
 @pytest.fixture
 def sample_locations():
     return [
-        {"id": "1", "zone": "norte", "tags": ["playa", "turismo"]},
-        {"id": "2", "zone": "sur", "tags": ["montaña"]},
-        {"id": "3", "zone": "norte", "tags": ["playa", "familiar"]}
+        {"id": "1", "zone": "norte", "tags": {"can_start": True, "can_finish": True, "mountain_finish": False, "tt_ok": True}},
+        {"id": "2", "zone": "sur", "tags": {"can_start": False, "can_finish": True, "mountain_finish": True, "tt_ok": False}},
+        {"id": "3", "zone": "norte", "tags": {"can_start": True, "can_finish": False, "mountain_finish": False, "tt_ok": False}}
     ]
 
 
@@ -28,12 +28,9 @@ def temp_json_file(sample_locations):
 @pytest.fixture
 def repo(temp_json_file):
     # Resetear el Singleton antes de cada test
-    LocationRepository._instance = None
-    # Crear instancia y asignar el path manualmente
-    instance = LocationRepository()
-    instance.file_path = temp_json_file
-    instance._locations = None  # Forzar recarga
-    instance.load_locations()
+    LocationRepository.instance = None
+    LocationRepository.loaded = False
+    instance = LocationRepository(temp_json_file)
     return instance
 
 
@@ -52,5 +49,6 @@ def test_get_by_id(repo):
 
 
 def test_get_by_tags_all(repo):
-    result = repo.get_by_tags_all(["playa", "turismo"])
+    result = repo.get_by_tags_all(["can_start", "can_finish"])
     assert len(result) == 1
+    assert result[0]["id"] == "1"

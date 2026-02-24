@@ -9,7 +9,7 @@ class LocationRepository:
     locations: List[Dict] = []
     loaded: bool = False
 
-    def __new__(cls) -> 'LocationRepository':
+    def __new__(cls, *args, **kwargs) -> 'LocationRepository':
         if cls.instance is None:
             cls.instance = super().__new__(cls)
         return cls.instance
@@ -40,29 +40,19 @@ class LocationRepository:
         devolver = []
 
         for loc in self.locations:
-            loc_tags = loc.get("tags")
-            all: bool = True
-            for tag in non_repeated:
-                if tag not in loc_tags:
-                    all = False
-                    break
-            if all:
+            loc_tags = loc.get("tags", {})
+            if all(loc_tags.get(tag, False) for tag in non_repeated):
                 devolver.append(loc)
 
         return devolver
 
-    def get_by_tags_any (self, tags: list[str]):
+    def get_by_tags_any(self, tags: list[str]):
         non_repeated = set(tags)
         devolver = []
 
         for loc in self.locations:
-            loc_tags = loc.get("tags")
-            any: bool = False
-            for tag in non_repeated:
-                if tag in loc_tags:
-                    any = True
-                    break
-            if any:
+            loc_tags = loc.get("tags", {})
+            if any(loc_tags.get(tag, False) for tag in non_repeated):
                 devolver.append(loc)
 
         return devolver
