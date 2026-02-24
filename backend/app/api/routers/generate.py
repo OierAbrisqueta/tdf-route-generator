@@ -1,17 +1,21 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 from ..schemas.requests import GenerateRequest
 from ..schemas.response import GenerateResponse
-from ..services.generator import generate_tour
+from ..services.generator import RouteGenerator
+from ...infrastructure.repositories.LocationRepository import LocationRepository
 
 router = APIRouter()
 
 
-@router.post("/generate", response_model=GenerateResponse)
-def generate(request: GenerateRequest):
-    """
-    Genera un Tour de Francia aleatorio basado en los settings.
+def get_route_generator() -> RouteGenerator:
+    repository = LocationRepository()
+    return RouteGenerator(repository)
 
-    - Si no pasas `seed`, se genera uno nuevo.
-    - Si pasas `seed`, obtienes el mismo Tour (reproducible).
-    """
-    return generate_tour(request)
+
+@router.post("/generate", response_model=GenerateResponse)
+def generate(
+    request: GenerateRequest,
+    generator: RouteGenerator = Depends(get_route_generator),
+):
+
+    return generator.generate(request)
