@@ -89,3 +89,12 @@ def test_summary_is_generated(generator, default_request):
     assert response.summary.total_stages == default_request.stages
     assert response.summary.total_distance_km > 0
     assert len(response.summary.countries_visited) > 0
+
+
+def test_transfer_distance_uses_stage_start_location(generator, default_request):
+    """Verifica que la transferencia se mide contra la salida real de cada etapa."""
+    response = generator.generate(default_request)
+
+    #Con etapas encadenadas, la salida de la etapa N coincide con la llegada de la N-1.
+    for stage in response.stages[1:]:
+        assert stage.transfer_km == pytest.approx(0.0, abs=1e-6)

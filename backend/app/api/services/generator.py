@@ -68,18 +68,22 @@ class RouteGenerator:
             if finish_location.get("zone") == "FOREIGN":
                 foreign_stages_count += 1
 
+            stage_start_location = previous_location if stage_num > 1 else start_location
+
             #This distances are orientative
-            distance_km = self._calculate_stage_distance(previous_location, finish_location, stage_type)
-            transfer_km = self._calculate_transfer_distance(previous_location, start_location) if stage_num > 1 else 0.0
+            distance_km = self._calculate_stage_distance(stage_start_location, finish_location, stage_type)
+            transfer_km = (
+                self._calculate_transfer_distance(previous_location, stage_start_location)
+                if stage_num > 1
+                else 0.0
+            )
 
             rest_day_after = self._should_have_rest_day(stage_num, request.stages)
 
             stage = Stage(
                 stage_number=stage_num,
                 stage_type=stage_type,
-                start_location=self._location_dict_to_schema(
-                    previous_location if stage_num > 1 else start_location
-                ),
+                start_location=self._location_dict_to_schema(stage_start_location),
                 finish_location=self._location_dict_to_schema(finish_location),
                 distance_km=distance_km,
                 transfer_km=transfer_km,
