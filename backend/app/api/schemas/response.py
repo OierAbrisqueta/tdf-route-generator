@@ -28,7 +28,7 @@ class Stage(BaseModel):
     start_location: Location
     finish_location: Location
     distance_km: float
-    transfer_km: float  # Distancia desde el final de la etapa anterior
+    transfer_km: float
     rest_day_after: bool = False
 
 
@@ -37,7 +37,7 @@ class TourSummary(BaseModel):
     total_stages: int
     total_distance_km: float
     countries_visited: List[str]
-    stages_by_type: dict  # {"FLAT": 8, "HILLY": 6, ...}
+    stages_by_type: dict
     score: float
 
 

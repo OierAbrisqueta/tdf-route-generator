@@ -1,6 +1,5 @@
 from typing import List, Dict, Any
 import random
-from ...infrastructure.repositories.LocationRepository import LocationRepository
 from ..schemas.requests import GenerateRequest
 from ..schemas.response import GenerateResponse, Stage, StageType, Location, TourSummary
 
@@ -32,14 +31,21 @@ class RouteGenerator:
             france_starts = [loc for loc in start_locations if loc.get("zone") != "FOREIGN"]
             start_location = random.choice(france_starts) if france_starts else random.choice(start_locations)
 
+        #Determine the number of stages of the foreign start
+        if request.foreign_start:
+            number_foreign_stages = random.randint(request.foreign_stages_min, request.foreign_stages_max)
+        else:
+            number_foreign_stages = 0
+
         #Generate stages
         previous_location = start_location
-        foreign_stages_count = 0
-        foreign_stages_target = random.randint(request.foreign_stages_min, request.foreign_stages_max)
         itt_remaining = request.itt_count
         ttt_done = not request.ttt_enabled
 
         for stage_num in range(1, request.stages + 1):
+
+            in_foreign_block = stage_num <= number_foreign_stages
+
             stage_type = self._determine_stage_type(
                 stage_num=stage_num,
                 total_stages=request.stages,
@@ -54,19 +60,15 @@ class RouteGenerator:
                 ttt_done = True
 
             finish_location = self._select_finish_location(
-                stage_type=stage_type,
-                stage_num=stage_num,
-                total_stages=request.stages,
-                foreign_stages_count=foreign_stages_count,
-                foreign_stages_target=foreign_stages_target,
-                mountain_finishes=mountain_finishes,
-                tt_locations=tt_locations,
-                all_finish_locations=all_finish_locations,
-                previous_location=previous_location
+                stage_type = stage_type,
+                stage_num = stage_num,
+                total_stages = request.stages,
+                in_foreign_block = in_foreign_block,
+                mountain_finishes = mountain_finishes,
+                tt_locations = tt_locations,
+                all_finish_locations = all_finish_locations,
+                previous_location = previous_location
             )
-
-            if finish_location.get("zone") == "FOREIGN":
-                foreign_stages_count += 1
 
             stage_start_location = previous_location if stage_num > 1 else start_location
 
@@ -101,19 +103,12 @@ class RouteGenerator:
             summary=summary
         )
 
-
-
-    def _get_start_locations(self, include_foreigns: bool = True) -> List[Dict[str, Any]]:
+    def _get_start_locations(self) -> List[Dict[str, Any]]:
         all_locations = self.location_repository.get_locations()
         start_locations = [
             loc for loc in all_locations
             if loc.get("tags", {}).get("can_start", False)
         ]
-        if not include_foreigns:
-            start_locations = [
-                loc for loc in start_locations
-                if loc.get("zone") != "FOREIGN"
-            ]
         return start_locations
 
     def _get_finish_locations(self) -> List[Dict[str, Any]]:
@@ -162,9 +157,14 @@ class RouteGenerator:
         else:
             return StageType.FLAT
 
-    def _select_finish_location(self, stage_type: StageType, stage_num: int, total_stages: int, foreign_stages_count: int,
-            foreign_stages_target: int, mountain_finishes: List[Dict[str, Any]], tt_locations: List[Dict[str, Any]], all_finish_locations: List[Dict[str, Any]],
+    def _select_finish_location(self, stage_type: StageType, stage_num: int, total_stages: int, in_foreign_block : bool, mountain_finishes: List[Dict[str, Any]], tt_locations: List[Dict[str, Any]], all_finish_locations: List[Dict[str, Any]],
             previous_location: Dict[str, Any]) -> Dict[str, Any]:
+
+        # Last stage has to be Paris
+        if stage_num == total_stages:
+            paris = [loc for loc in all_finish_locations if loc.get("name", "").lower() == "paris"]
+            if paris:
+                return paris[0]
 
         candidates = []
 
@@ -175,15 +175,19 @@ class RouteGenerator:
         else:
             candidates = all_finish_locations
 
-        #Filter foreign stages
-        if foreign_stages_count >= foreign_stages_target:
-            candidates = [loc for loc in candidates if loc.get("zone") != "FOREIGN"]
-
-        #Last stage has to be Paris
-        if stage_num == total_stages:
-            paris = [loc for loc in all_finish_locations if loc.get("name", "").lower() == "paris"]
-            if paris:
-                return paris[0]
+        #If we are in the foreign starting block, stages must finish abroad
+        if in_foreign_block:
+            foreign_candidates = [loc for loc in candidates if loc.get("zone") == "FOREIGN"]
+            #If the specific type has no foreign options, fall back to any foreign location.
+            candidates = foreign_candidates if foreign_candidates else [
+                loc for loc in all_finish_locations if loc.get("zone") == "FOREIGN"
+            ]
+        else:
+            national_candidates = [loc for loc in candidates if loc.get("zone") != "FOREIGN"]
+            #If the specific type has no national options, fall back to any foreign location.
+            candidates = national_candidates if national_candidates else [
+                loc for loc in all_finish_locations if loc.get("zone") != "FOREIGN"
+            ]
 
         #Do not repeat location
         candidates = [loc for loc in candidates if loc.get("id") != previous_location.get("id")]
@@ -194,6 +198,7 @@ class RouteGenerator:
         return random.choice(candidates)
 
     def _calculate_stage_distance(self, start: Dict[str, Any], finish: Dict[str, Any], stage_type: StageType) -> float:
+        """The Harversine Formula is applied"""
         #Calculate line distance between places (orientative)
         from math import radians, sin, cos, sqrt, atan2
 
@@ -220,6 +225,7 @@ class RouteGenerator:
             return max(150.0, min(250.0, straight_line * 1.3))
 
     def _calculate_transfer_distance(self, previous_finish: Dict[str, Any], current_start: Dict[str, Any]) -> float:
+        """The Harversine Formula is applied"""
         #Calculates de transfer distance
         from math import radians, sin, cos, sqrt, atan2
 
@@ -236,8 +242,8 @@ class RouteGenerator:
         return r * c
 
     def _should_have_rest_day(self, stage_num: int, total_stages: int) -> bool:
-        """Determina si debe haber día de descanso después de esta etapa."""
-        # Días de descanso típicos en el Tour: después de etapas 9 y 15
+        """Determines whether the next day should be a rest day or not"""
+        #Usually the 9 and 15 days
         if total_stages >= 21:
             return stage_num in [9, 15]
         elif total_stages >= 14:
