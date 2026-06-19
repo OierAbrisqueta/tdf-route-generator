@@ -1514,10 +1514,10 @@
   {
     "id": "brighton",
     "name": "Brighton",
-    "country": "FR",
-    "lat": 50.1955426,
-    "lon": 1.517683,
-    "zone": "FR_NW",
+    "country": "GB",
+    "lat": 50.823793,
+    "lon": -0.164117,
+    "zone": "FOREIGN",
     "tags": {
       "can_start": true,
       "can_finish": true,
@@ -1766,10 +1766,10 @@
   {
     "id": "cambridge",
     "name": "Cambridge",
-    "country": "FR",
-    "lat": 45.2029397,
-    "lon": 5.7042168,
-    "zone": "FR_NE",
+    "country": "GB",
+    "lat": 52.200316,
+    "lon": 0.126442,
+    "zone": "FOREIGN",
     "tags": {
       "can_start": true,
       "can_finish": true,
@@ -1808,10 +1808,10 @@
   {
     "id": "canterbury",
     "name": "Canterbury",
-    "country": "FR",
-    "lat": 49.0726628,
-    "lon": 2.3902145,
-    "zone": "PARIS",
+    "country": "GB",
+    "lat": 51.278922,
+    "lon": 1.085531,
+    "zone": "FOREIGN",
     "tags": {
       "can_start": true,
       "can_finish": true,
@@ -2438,10 +2438,10 @@
   {
     "id": "ciney",
     "name": "Ciney",
-    "country": "FR",
-    "lat": 48.8980891,
-    "lon": 2.3406828,
-    "zone": "PARIS",
+    "country": "BE",
+    "lat": 50.287728,
+    "lon": 5.103453,
+    "zone": "FOREIGN",
     "tags": {
       "can_start": true,
       "can_finish": true,
@@ -2564,10 +2564,10 @@
   {
     "id": "cologne",
     "name": "Cologne",
-    "country": "FR",
-    "lat": 43.7218277,
-    "lon": 0.9774958,
-    "zone": "FR_NW",
+    "country": "GB",
+    "lat": 50.941670,
+    "lon": 6.955087,
+    "zone": "FOREIGN",
     "tags": {
       "can_start": true,
       "can_finish": true,
@@ -2648,10 +2648,10 @@
   {
     "id": "cork",
     "name": "Cork",
-    "country": "FR",
-    "lat": 48.0970955,
-    "lon": -1.647674,
-    "zone": "FR_NW",
+    "country": "IE",
+    "lat": 51.898461,
+    "lon": -8.472189,
+    "zone": "FOREIGN",
     "tags": {
       "can_start": true,
       "can_finish": true,
@@ -2760,10 +2760,10 @@
   {
     "id": "cuneo",
     "name": "Cuneo",
-    "country": "FR",
-    "lat": 43.7310317,
-    "lon": 7.2863074,
-    "zone": "FR_NE",
+    "country": "IT",
+    "lat": 44.381437,
+    "lon": 7.539535,
+    "zone": "FOREIGN",
     "tags": {
       "can_start": true,
       "can_finish": true,
@@ -3012,10 +3012,10 @@
   {
     "id": "dublin",
     "name": "Dublin",
-    "country": "FR",
-    "lat": 43.956999,
-    "lon": 4.8850335,
-    "zone": "FR_NE",
+    "country": "IE",
+    "lat": 53.33964,
+    "lon": -6.272474,
+    "zone": "FOREIGN",
     "tags": {
       "can_start": true,
       "can_finish": true,
@@ -3068,10 +3068,10 @@
   {
     "id": "dusseldorf",
     "name": "Düsseldorf",
-    "country": "FR",
-    "lat": 47.282837,
-    "lon": -1.4494343,
-    "zone": "FR_NW",
+    "country": "DE",
+    "lat": 51.229543,
+    "lon": 6.787275,
+    "zone": "FOREIGN",
     "tags": {
       "can_start": true,
       "can_finish": true,
@@ -3096,10 +3096,10 @@
   {
     "id": "enniscorthy",
     "name": "Enniscorthy",
-    "country": "FR",
-    "lat": 43.6244583,
-    "lon": 0.8840029,
-    "zone": "FR_NW",
+    "country": "IE",
+    "lat": 52.504162,
+    "lon": -6.572933,
+    "zone": "FOREIGN",
     "tags": {
       "can_start": true,
       "can_finish": true,
@@ -3376,10 +3376,10 @@
   {
     "id": "frankfurt",
     "name": "Frankfurt",
-    "country": "FR",
-    "lat": 50.0883218,
-    "lon": 2.6665745,
-    "zone": "FR_NE",
+    "country": "DE",
+    "lat": 50.111877,
+    "lon": 8.682496,
+    "zone": "FOREIGN",
     "tags": {
       "can_start": true,
       "can_finish": true,
@@ -3516,10 +3516,10 @@
   {
     "id": "geneva",
     "name": "Geneva",
-    "country": "FR",
-    "lat": 46.3613502,
-    "lon": 6.393247,
-    "zone": "FR_NE",
+    "country": "CH",
+    "lat": 46.203519,
+    "lon": 6.152516,
+    "zone": "FOREIGN",
     "tags": {
       "can_start": true,
       "can_finish": true,
@@ -3796,10 +3796,10 @@
   {
     "id": "herentals",
     "name": "Herentals",
-    "country": "FR",
-    "lat": 47.4116914,
-    "lon": 2.9219087,
-    "zone": "FR_NE",
+    "country": "BE",
+    "lat": 51.176845,
+    "lon": 4.829152,
+    "zone": "FOREIGN",
     "tags": {
       "can_start": true,
       "can_finish": true,
@@ -3894,10 +3894,10 @@
   {
     "id": "ivrea",
     "name": "Ivrea",
-    "country": "FR",
-    "lat": 48.0986397,
-    "lon": 5.150893,
-    "zone": "FR_NE",
+    "country": "IT",
+    "lat": 45.468256,
+    "lon": 7.886494,
+    "zone": "FOREIGN",
     "tags": {
       "can_start": true,
       "can_finish": true,
@@ -3908,10 +3908,10 @@
   {
     "id": "jaca",
     "name": "Jaca",
-    "country": "FR",
-    "lat": 43.3195447,
-    "lon": 0.2138016,
-    "zone": "FR_NW",
+    "country": "ES",
+    "lat": 42.572598,
+    "lon": -0.549515,
+    "zone": "FOREIGN",
     "tags": {
       "can_start": true,
       "can_finish": true,
@@ -3922,10 +3922,10 @@
   {
     "id": "jambes",
     "name": "Jambes",
-    "country": "FR",
-    "lat": 43.6579032,
-    "lon": 0.5650956,
-    "zone": "FR_NW",
+    "country": "BE",
+    "lat": 50.453775,
+    "lon": 4.869963,
+    "zone": "FOREIGN",
     "tags": {
       "can_start": true,
       "can_finish": true,
@@ -4342,10 +4342,10 @@
   {
     "id": "la_seu_d_urgell",
     "name": "La Seu d'Urgell",
-    "country": "FR",
-    "lat": 42.6628568,
-    "lon": 2.8763402,
-    "zone": "FR_NE",
+    "country": "ES",
+    "lat": 42.356865,
+    "lon": 1.452762,
+    "zone": "FOREIGN",
     "tags": {
       "can_start": true,
       "can_finish": true,
@@ -4622,10 +4622,10 @@
   {
     "id": "lausanne",
     "name": "Lausanne",
-    "country": "FR",
-    "lat": 47.0433932,
-    "lon": 1.1821018,
-    "zone": "FR_NW",
+    "country": "CH",
+    "lat": 46.517681,
+    "lon": 6.638481,
+    "zone": "FOREIGN",
     "tags": {
       "can_start": true,
       "can_finish": true,
@@ -4944,10 +4944,10 @@
   {
     "id": "leeds",
     "name": "Leeds",
-    "country": "FR",
-    "lat": 50.6427891,
-    "lon": 3.0730461,
-    "zone": "FR_NE",
+    "country": "GB",
+    "lat": 53.799268,
+    "lon": -1.543021,
+    "zone": "FOREIGN",
     "tags": {
       "can_start": true,
       "can_finish": true,
@@ -4958,10 +4958,10 @@
   {
     "id": "leiden",
     "name": "Leiden",
-    "country": "FR",
-    "lat": 48.6615769,
-    "lon": 6.1840734,
-    "zone": "FR_NE",
+    "country": "NL",
+    "lat": 52.163209,
+    "lon": 4.494650,
+    "zone": "FOREIGN",
     "tags": {
       "can_start": true,
       "can_finish": true,
@@ -5070,10 +5070,10 @@
   {
     "id": "leuven",
     "name": "Leuven",
-    "country": "FR",
-    "lat": 43.2763215,
-    "lon": 5.3907636,
-    "zone": "FR_NE",
+    "country": "BE",
+    "lat": 50.871333,
+    "lon": 4.711505,
+    "zone": "FOREIGN",
     "tags": {
       "can_start": true,
       "can_finish": true,
@@ -5238,10 +5238,10 @@
   {
     "id": "london",
     "name": "London",
-    "country": "FR",
-    "lat": 46.6295778,
-    "lon": 5.0978317,
-    "zone": "FR_NE",
+    "country": "GB",
+    "lat": 51.516070,
+    "lon": -0.134808,
+    "zone": "FOREIGN",
     "tags": {
       "can_start": true,
       "can_finish": true,
@@ -5504,10 +5504,10 @@
   {
     "id": "maastricht",
     "name": "Maastricht",
-    "country": "FR",
-    "lat": 50.5760454,
-    "lon": 3.0711245,
-    "zone": "FR_NE",
+    "country": "NL",
+    "lat": 50.848800,
+    "lon": 5.702358,
+    "zone": "FOREIGN",
     "tags": {
       "can_start": true,
       "can_finish": true,
@@ -5616,10 +5616,10 @@
   {
     "id": "martigny",
     "name": "Martigny",
-    "country": "FR",
-    "lat": 49.8597222,
-    "lon": 4.1375,
-    "zone": "FR_NE",
+    "country": "CH",
+    "lat": 46.117104,
+    "lon": 7.107655,
+    "zone": "FOREIGN",
     "tags": {
       "can_start": true,
       "can_finish": true,
@@ -5938,10 +5938,10 @@
   {
     "id": "mons",
     "name": "Mons",
-    "country": "FR",
-    "lat": 43.6110808,
-    "lon": 1.5739551,
-    "zone": "FR_NW",
+    "country": "BE",
+    "lat": 50.449635,
+    "lon": 3.956106,
+    "zone": "FOREIGN",
     "tags": {
       "can_start": true,
       "can_finish": true,
@@ -6288,10 +6288,10 @@
   {
     "id": "mouscron",
     "name": "Mouscron",
-    "country": "FR",
-    "lat": 50.7105362,
-    "lon": 3.2199567,
-    "zone": "FR_NE",
+    "country": "BE",
+    "lat": 50.745457,
+    "lon": 3.217835,
+    "zone": "FOREIGN",
     "tags": {
       "can_start": true,
       "can_finish": true,
@@ -6414,10 +6414,10 @@
   {
     "id": "namur",
     "name": "Namur",
-    "country": "FR",
-    "lat": 48.1434728,
-    "lon": 6.7981147,
-    "zone": "FR_NE",
+    "country": "BE",
+    "lat": 50.465371,
+    "lon": 4.865112,
+    "zone": "FOREIGN",
     "tags": {
       "can_start": true,
       "can_finish": true,
@@ -6694,10 +6694,10 @@
   {
     "id": "obernai",
     "name": "Obernai",
-    "country": "FR",
-    "lat": 48.4623358,
-    "lon": 7.4817123,
-    "zone": "FR_NE",
+    "country": "CH",
+    "lat": 46.952868,
+    "lon": 7.449563,
+    "zone": "FOREIGN",
     "tags": {
       "can_start": true,
       "can_finish": true,
@@ -6876,10 +6876,10 @@
   {
     "id": "pamplona",
     "name": "Pamplona",
-    "country": "FR",
-    "lat": 42.948411,
-    "lon": -0.3362508,
-    "zone": "FR_NW",
+    "country": "ES",
+    "lat": 42.813435,
+    "lon": -1.637416,
+    "zone": "FOREIGN",
     "tags": {
       "can_start": true,
       "can_finish": true,
@@ -7282,10 +7282,10 @@
   {
     "id": "portsmouth",
     "name": "Portsmouth",
-    "country": "FR",
-    "lat": 49.2011194,
-    "lon": -0.3823996,
-    "zone": "FR_NW",
+    "country": "GB",
+    "lat": 50.818164,
+    "lon": -1.083351,
+    "zone": "FOREIGN",
     "tags": {
       "can_start": true,
       "can_finish": true,
@@ -7632,10 +7632,10 @@
   {
     "id": "rotterdam",
     "name": "Rotterdam",
-    "country": "FR",
-    "lat": 48.5808109,
-    "lon": 7.7816199,
-    "zone": "FR_NE",
+    "country": "NL",
+    "lat": 51.923637,
+    "lon": 4.474363,
+    "zone": "FOREIGN",
     "tags": {
       "can_start": true,
       "can_finish": true,
@@ -8528,10 +8528,10 @@
   {
     "id": "san_sebastian",
     "name": "San Sebastián",
-    "country": "FR",
-    "lat": 48.6251357,
-    "lon": -2.1366995,
-    "zone": "FR_NW",
+    "country": "ES",
+    "lat": 43.314961,
+    "lon": -1.989779,
+    "zone": "FOREIGN",
     "tags": {
       "can_start": true,
       "can_finish": true,
@@ -8542,10 +8542,10 @@
   {
     "id": "sanremo",
     "name": "Sanremo",
-    "country": "FR",
-    "lat": 43.294491,
-    "lon": 5.37484,
-    "zone": "FR_NE",
+    "country": "IT",
+    "lat": 43.816529,
+    "lon": 7.777323,
+    "zone": "FOREIGN",
     "tags": {
       "can_start": true,
       "can_finish": true,
@@ -8906,10 +8906,10 @@
   {
     "id": "spa",
     "name": "Spa",
-    "country": "FR",
-    "lat": 45.7639565,
-    "lon": 4.8379703,
-    "zone": "FR_NE",
+    "country": "BE",
+    "lat": 50.492335,
+    "lon": 5.862783,
+    "zone": "FOREIGN",
     "tags": {
       "can_start": true,
       "can_finish": true,
@@ -8976,10 +8976,10 @@
   {
     "id": "stuttgart",
     "name": "Stuttgart",
-    "country": "FR",
-    "lat": 48.5318674,
-    "lon": 2.6503727,
-    "zone": "FR_NE",
+    "country": "DE",
+    "lat": 48.776946,
+    "lon": 9.173566,
+    "zone": "FOREIGN",
     "tags": {
       "can_start": true,
       "can_finish": true,
@@ -9340,10 +9340,10 @@
   {
     "id": "turin",
     "name": "Turin",
-    "country": "FR",
-    "lat": 45.8793054,
-    "lon": 4.2493944,
-    "zone": "FR_NE",
+    "country": "IT",
+    "lat": 45.082901,
+    "lon": 7.665045,
+    "zone": "FOREIGN",
     "tags": {
       "can_start": true,
       "can_finish": true,
@@ -9368,10 +9368,10 @@
   {
     "id": "utrecht",
     "name": "Utrecht",
-    "country": "FR",
-    "lat": 47.2831675,
-    "lon": -1.5520875,
-    "zone": "FR_NW",
+    "country": "NL",
+    "lat": 52.094277,
+    "lon": 5.130152,
+    "zone": "FOREIGN",
     "tags": {
       "can_start": true,
       "can_finish": true,
@@ -9634,10 +9634,10 @@
   {
     "id": "verviers",
     "name": "Verviers",
-    "country": "FR",
-    "lat": 43.1266728,
-    "lon": 5.9479877,
-    "zone": "FR_NE",
+    "country": "BE",
+    "lat": 50.592726,
+    "lon": 5.870631,
+    "zone": "FOREIGN",
     "tags": {
       "can_start": true,
       "can_finish": true,
@@ -10012,10 +10012,10 @@
   {
     "id": "wiesbaden",
     "name": "Wiesbaden",
-    "country": "FR",
-    "lat": 47.4049389,
-    "lon": 0.5929812,
-    "zone": "FR_NW",
+    "country": "DE",
+    "lat": 50.082748,
+    "lon": 8.244660,
+    "zone": "FOREIGN",
     "tags": {
       "can_start": true,
       "can_finish": true,
@@ -10026,10 +10026,10 @@
   {
     "id": "york",
     "name": "York",
-    "country": "FR",
-    "lat": 47.3325605,
-    "lon": 5.0594388,
-    "zone": "FR_NE",
+    "country": "GB",
+    "lat": 53.963997,
+    "lon": -1.080072,
+    "zone": "FOREIGN",
     "tags": {
       "can_start": true,
       "can_finish": true,
@@ -10040,10 +10040,10 @@
   {
     "id": "ypres",
     "name": "Ypres",
-    "country": "FR",
-    "lat": 48.5856392,
-    "lon": 7.7802078,
-    "zone": "FR_NE",
+    "country": "BE",
+    "lat": 50.851923,
+    "lon": 2.875850,
+    "zone": "FOREIGN",
     "tags": {
       "can_start": true,
       "can_finish": true,
@@ -10068,10 +10068,10 @@
   {
     "id": "zurich",
     "name": "Zürich",
-    "country": "FR",
-    "lat": 48.5796616,
-    "lon": 7.7560654,
-    "zone": "FR_NE",
+    "country": "CH",
+    "lat": 47.362718,
+    "lon": 8.547139,
+    "zone": "FOREIGN",
     "tags": {
       "can_start": true,
       "can_finish": true,

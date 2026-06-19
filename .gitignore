@@ -35,7 +35,7 @@ Thumbs.db
 *.iml
 
 # ---- FastAPI / Uvicorn ----
-# (No suelen generar mucho, pero por si acaso)
+
 *.pid
 
 # ---- Data artifacts (generados por scripts) ----
