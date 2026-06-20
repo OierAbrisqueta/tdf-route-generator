@@ -240,10 +240,10 @@
   {
     "id": "amsterdam",
     "name": "Amsterdam",
-    "country": "FR",
-    "lat": -37.8364908,
-    "lon": 77.554173,
-    "zone": "FR_SE",
+    "country": "NL",
+    "lat": 52.379012,
+    "lon": 4.895952,
+    "zone": "FOREIGN",
     "tags": {
       "can_start": true,
       "can_finish": true,
@@ -408,10 +408,10 @@
   {
     "id": "antwerp",
     "name": "Antwerp",
-    "country": "FR",
-    "lat": 48.8662313,
-    "lon": 2.3314036,
-    "zone": "PARIS",
+    "country": "BE",
+    "lat": 51.221679,
+    "lon": 4.416502,
+    "zone": "FOREIGN",
     "tags": {
       "can_start": true,
       "can_finish": true,
@@ -422,10 +422,10 @@
   {
     "id": "aosta",
     "name": "Aosta",
-    "country": "FR",
-    "lat": 44.7154707,
-    "lon": 5.0569017,
-    "zone": "FR_NE",
+    "country": "IT",
+    "lat": 45.734306,
+    "lon": 7.309107,
+    "zone": "FOREIGN",
     "tags": {
       "can_start": true,
       "can_finish": true,
@@ -898,10 +898,10 @@
   {
     "id": "barcelona",
     "name": "Barcelona",
-    "country": "FR",
-    "lat": 43.8298932,
-    "lon": 4.3704251,
-    "zone": "FR_NE",
+    "country": "ES",
+    "lat": 41.397206,
+    "lon": 2.162188,
+    "zone": "FOREIGN",
     "tags": {
       "can_start": true,
       "can_finish": true,
@@ -1094,10 +1094,10 @@
   {
     "id": "bern",
     "name": "Bern",
-    "country": "FR",
-    "lat": 45.0073345,
-    "lon": -0.6268971,
-    "zone": "FR_NW",
+    "country": "CH",
+    "lat": 46.940138,
+    "lon": 7.449999,
+    "zone": "FOREIGN",
     "tags": {
       "can_start": true,
       "can_finish": true,
@@ -2186,10 +2186,10 @@
   {
     "id": "charleroi",
     "name": "Charleroi",
-    "country": "FR",
-    "lat": 46.0462258,
-    "lon": -1.4026646,
-    "zone": "FR_NW",
+    "country": "BE",
+    "lat": 50.407292,
+    "lon": 4.446815,
+    "zone": "FOREIGN",
     "tags": {
       "can_start": true,
       "can_finish": true,
@@ -2564,7 +2564,7 @@
   {
     "id": "cologne",
     "name": "Cologne",
-    "country": "GB",
+    "country": "DE",
     "lat": 50.941670,
     "lon": 6.955087,
     "zone": "FOREIGN",
@@ -3110,7 +3110,7 @@
   {
     "id": "escaldes_engordany",
     "name": "Escaldes-Engordany",
-    "country": "ES",
+    "country": "AD",
     "lat": 41.5591098,
     "lon": 2.1010202,
     "zone": "FOREIGN",
@@ -3528,20 +3528,6 @@
     }
   },
   {
-    "id": "geneva_switzerland",
-    "name": "Geneva, Switzerland",
-    "country": "US",
-    "lat": 38.8542618,
-    "lon": -85.0334335,
-    "zone": "FOREIGN",
-    "tags": {
-      "can_start": true,
-      "can_finish": true,
-      "mountain_finish": false,
-      "tt_ok": true
-    }
-  },
-  {
     "id": "gex",
     "name": "Gex",
     "country": "FR",
@@ -3740,9 +3726,9 @@
   {
     "id": "harrogate",
     "name": "Harrogate",
-    "country": "DE",
-    "lat": 52.0129774,
-    "lon": 8.5595117,
+    "country": "GB",
+    "lat": 53.991372,
+    "lon": -1.528665,
     "zone": "FOREIGN",
     "tags": {
       "can_start": true,
@@ -4006,10 +3992,10 @@
   {
     "id": "karlsruhe",
     "name": "Karlsruhe",
-    "country": "FR",
-    "lat": 48.6772805,
-    "lon": 6.1729276,
-    "zone": "FR_NE",
+    "country": "DE",
+    "lat": 49.005405,
+    "lon": 8.392380,
+    "zone": "FOREIGN",
     "tags": {
       "can_start": true,
       "can_finish": true,
@@ -5196,10 +5182,10 @@
   {
     "id": "liege",
     "name": "Liège",
-    "country": "FR",
-    "lat": 48.8796039,
-    "lon": 2.3270446,
-    "zone": "PARIS",
+    "country": "BE",
+    "lat": 50.644388,
+    "lon": 5.576294,
+    "zone": "FOREIGN",
     "tags": {
       "can_start": true,
       "can_finish": true,
@@ -6694,10 +6680,10 @@
   {
     "id": "obernai",
     "name": "Obernai",
-    "country": "CH",
-    "lat": 46.952868,
-    "lon": 7.449563,
-    "zone": "FOREIGN",
+    "country": "FR",
+    "lat": 48.461555,
+    "lon": 7.487900,
+    "zone": "FR_NE",
     "tags": {
       "can_start": true,
       "can_finish": true,
@@ -6834,10 +6820,10 @@
   {
     "id": "pal",
     "name": "Pal",
-    "country": "FR",
-    "lat": 48.8564911,
-    "lon": 2.3128,
-    "zone": "PARIS",
+    "country": "AD",
+    "lat": 42.547052,
+    "lon": 1.452653,
+    "zone": "FOREIGN",
     "tags": {
       "can_start": false,
       "can_finish": false,
@@ -7044,9 +7030,9 @@
   {
     "id": "pinerolo",
     "name": "Pinerolo",
-    "country": "DE",
-    "lat": 47.8688669,
-    "lon": 12.6440583,
+    "country": "IT",
+    "lat": 44.885791,
+    "lon": 7.335233,
     "zone": "FOREIGN",
     "tags": {
       "can_start": true,
@@ -7128,9 +7114,9 @@
   {
     "id": "plymouth",
     "name": "Plymouth",
-    "country": "US",
-    "lat": 41.8667167,
-    "lon": -70.8020289,
+    "country": "GB",
+    "lat": 50.374577,
+    "lon": -4.137733,
     "zone": "FOREIGN",
     "tags": {
       "can_start": true,
@@ -7744,10 +7730,10 @@
   {
     "id": "saarbrucken",
     "name": "Saarbrücken",
-    "country": "FR",
-    "lat": 47.2172776,
-    "lon": -1.5171875,
-    "zone": "FR_NW",
+    "country": "DE",
+    "lat": 49.235535,
+    "lon": 6.995305,
+    "zone": "FOREIGN",
     "tags": {
       "can_start": true,
       "can_finish": true,
@@ -7758,10 +7744,10 @@
   {
     "id": "saarlouis",
     "name": "Saarlouis",
-    "country": "FR",
-    "lat": 47.2711958,
-    "lon": -2.2471348,
-    "zone": "FR_NW",
+    "country": "DE",
+    "lat": 49.314720,
+    "lon": 6.755661,
+    "zone": "FOREIGN",
     "tags": {
       "can_start": true,
       "can_finish": true,
@@ -8836,9 +8822,9 @@
   {
     "id": "sint_willebrord",
     "name": "Sint Willebrord",
-    "country": "BE",
-    "lat": 51.1873862,
-    "lon": 4.4325332,
+    "country": "NL",
+    "lat": 51.549981,
+    "lon": 4.591679,
     "zone": "FOREIGN",
     "tags": {
       "can_start": true,
@@ -8850,10 +8836,10 @@
   {
     "id": "sint_niklaas",
     "name": "Sint-Niklaas",
-    "country": "FR",
-    "lat": 48.0789921,
-    "lon": 7.3351151,
-    "zone": "FR_NE",
+    "country": "BE",
+    "lat": 51.159539,
+    "lon": 4.162262,
+    "zone": "FOREIGN",
     "tags": {
       "can_start": true,
       "can_finish": true,
@@ -9228,10 +9214,10 @@
   {
     "id": "tournai",
     "name": "Tournai",
-    "country": "FR",
-    "lat": 43.8537652,
-    "lon": -0.1368812,
-    "zone": "FR_NW",
+    "country": "BE",
+    "lat": 50.614980,
+    "lon": 3.376005,
+    "zone": "FOREIGN",
     "tags": {
       "can_start": true,
       "can_finish": true,
@@ -9508,9 +9494,9 @@
   {
     "id": "valkenburg",
     "name": "Valkenburg",
-    "country": "BE",
-    "lat": 51.1353652,
-    "lon": 3.8670276,
+    "country": "NL",
+    "lat": 50.869166,
+    "lon": 5.827615,
     "zone": "FOREIGN",
     "tags": {
       "can_start": true,
@@ -9858,10 +9844,10 @@
   {
     "id": "vise",
     "name": "Visé",
-    "country": "FR",
-    "lat": 43.4099657,
-    "lon": 1.0675621,
-    "zone": "FR_NW",
+    "country": "BE",
+    "lat": 50.736995,
+    "lon": 5.692392,
+    "zone": "FOREIGN",
     "tags": {
       "can_start": true,
       "can_finish": true,
@@ -9984,10 +9970,10 @@
   {
     "id": "waterloo",
     "name": "Waterloo",
-    "country": "FR",
-    "lat": 43.7217888,
-    "lon": 0.3496432,
-    "zone": "FR_NW",
+    "country": "BE",
+    "lat": 50.702045,
+    "lon": 4.402044,
+    "zone": "FOREIGN",
     "tags": {
       "can_start": true,
       "can_finish": true,
@@ -10240,20 +10226,6 @@
     "lat": 43.4695,
     "lon": -0.035,
     "zone": "FR_NW",
-    "tags": {
-      "can_start": true,
-      "can_finish": true,
-      "mountain_finish": false,
-      "tt_ok": true
-    }
-  },
-  {
-    "id": "waregem_compiegne",
-    "name": "Compiègne",
-    "country": "FR",
-    "lat": 49.4179,
-    "lon": 2.8261,
-    "zone": "FR_NE",
     "tags": {
       "can_start": true,
       "can_finish": true,
