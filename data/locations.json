@@ -532,20 +532,6 @@
     }
   },
   {
-    "id": "arlon",
-    "name": "Arlon",
-    "country": "FR",
-    "lat": 49.3581077,
-    "lon": 6.1343515,
-    "zone": "FR_NE",
-    "tags": {
-      "can_start": true,
-      "can_finish": true,
-      "mountain_finish": false,
-      "tt_ok": true
-    }
-  },
-  {
     "id": "armentieres",
     "name": "Armentières",
     "country": "FR",
@@ -924,20 +910,6 @@
     }
   },
   {
-    "id": "basel",
-    "name": "Basel",
-    "country": "FR",
-    "lat": 47.603237,
-    "lon": 7.5243481,
-    "zone": "FR_NE",
-    "tags": {
-      "can_start": true,
-      "can_finish": true,
-      "mountain_finish": false,
-      "tt_ok": true
-    }
-  },
-  {
     "id": "bastia",
     "name": "Bastia",
     "country": "FR",
@@ -986,20 +958,6 @@
     "lat": 44.4320456,
     "lon": -0.2126009,
     "zone": "FR_NW",
-    "tags": {
-      "can_start": true,
-      "can_finish": true,
-      "mountain_finish": false,
-      "tt_ok": true
-    }
-  },
-  {
-    "id": "beauraing",
-    "name": "Beauraing",
-    "country": "FR",
-    "lat": 46.998445,
-    "lon": 5.1455438,
-    "zone": "FR_NE",
     "tags": {
       "can_start": true,
       "can_finish": true,
@@ -1070,20 +1028,6 @@
     "lat": 44.8534568,
     "lon": 0.487531,
     "zone": "FR_NW",
-    "tags": {
-      "can_start": true,
-      "can_finish": true,
-      "mountain_finish": false,
-      "tt_ok": true
-    }
-  },
-  {
-    "id": "beringen",
-    "name": "Beringen",
-    "country": "FR",
-    "lat": 48.8357451,
-    "lon": 6.6409625,
-    "zone": "FR_NE",
     "tags": {
       "can_start": true,
       "can_finish": true,
@@ -1991,8 +1935,8 @@
     "id": "castres",
     "name": "Castres",
     "country": "FR",
-    "lat": 49.8044444,
-    "lon": 3.2383333,
+    "lat": 43.608032,
+    "lon": 2.240663,
     "zone": "FR_NE",
     "tags": {
       "can_start": true,
@@ -3111,8 +3055,8 @@
     "id": "escaldes_engordany",
     "name": "Escaldes-Engordany",
     "country": "AD",
-    "lat": 41.5591098,
-    "lon": 2.1010202,
+    "lat": 42.511348,
+    "lon": 1.538814,
     "zone": "FOREIGN",
     "tags": {
       "can_start": true,
@@ -3601,8 +3545,8 @@
     "id": "gourette_col_d_aubisque",
     "name": "Gourette-Col d'Aubisque",
     "country": "FR",
-    "lat": 42.9581782,
-    "lon": -0.3324824,
+    "lat": 42.976583,
+    "lon": -0.339778,
     "zone": "FR_NW",
     "tags": {
       "can_start": true,
@@ -5897,8 +5841,8 @@
     "id": "monaco",
     "name": "Monaco",
     "country": "FR",
-    "lat": 42.2803146,
-    "lon": 9.4304477,
+    "lat": 43.734130,
+    "lon": 7.421439,
     "zone": "FR_NE",
     "tags": {
       "can_start": true,
@@ -5911,8 +5855,8 @@
     "id": "mondorf_les_bains",
     "name": "Mondorf-les-Bains",
     "country": "FR",
-    "lat": 49.2794862,
-    "lon": -0.1251448,
+    "lat": 49.510841,
+    "lon": 6.288352,
     "zone": "FR_NW",
     "tags": {
       "can_start": true,
@@ -6348,20 +6292,6 @@
     "lat": 45.9532945,
     "lon": 6.641749,
     "zone": "FR_NE",
-    "tags": {
-      "can_start": true,
-      "can_finish": true,
-      "mountain_finish": false,
-      "tt_ok": true
-    }
-  },
-  {
-    "id": "mohlin",
-    "name": "Möhlin",
-    "country": "DE",
-    "lat": 47.9411703,
-    "lon": 7.7081584,
-    "zone": "FOREIGN",
     "tags": {
       "can_start": true,
       "can_finish": true,
@@ -7000,20 +6930,6 @@
     }
   },
   {
-    "id": "pforzheim",
-    "name": "Pforzheim",
-    "country": "FR",
-    "lat": 48.8073107,
-    "lon": 2.4802561,
-    "zone": "PARIS",
-    "tags": {
-      "can_start": true,
-      "can_finish": true,
-      "mountain_finish": false,
-      "tt_ok": true
-    }
-  },
-  {
     "id": "piau_engaly",
     "name": "Piau-Engaly",
     "country": "FR",
@@ -7359,7 +7275,7 @@
     "tags": {
       "can_start": true,
       "can_finish": true,
-      "mountain_finish": false,
+      "mountain_finish": true,
       "tt_ok": true
     }
   },
@@ -8736,20 +8652,6 @@
     }
   },
   {
-    "id": "seraing",
-    "name": "Seraing",
-    "country": "FR",
-    "lat": 50.3818174,
-    "lon": 3.0748205,
-    "zone": "FR_NE",
-    "tags": {
-      "can_start": true,
-      "can_finish": true,
-      "mountain_finish": false,
-      "tt_ok": true
-    }
-  },
-  {
     "id": "serre_chevalier",
     "name": "Serre Chevalier",
     "country": "FR",
@@ -8766,29 +8668,15 @@
   {
     "id": "sestriere",
     "name": "Sestriere",
-    "country": "FR",
-    "lat": 45.317698,
-    "lon": 5.5999296,
-    "zone": "FR_NE",
+    "country": "IT",
+    "lat": 44.956571,
+    "lon": 6.873290,
+    "zone": "FOREIGN",
     "tags": {
       "can_start": true,
       "can_finish": true,
-      "mountain_finish": false,
-      "tt_ok": true
-    }
-  },
-  {
-    "id": "sestrieres",
-    "name": "Sestrières",
-    "country": "FR",
-    "lat": 44.9188375,
-    "lon": 6.6993897,
-    "zone": "FR_NE",
-    "tags": {
-      "can_start": true,
-      "can_finish": true,
-      "mountain_finish": false,
-      "tt_ok": true
+      "mountain_finish": true,
+      "tt_ok": false
     }
   },
   {
