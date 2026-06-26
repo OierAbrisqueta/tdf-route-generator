@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import List
+from typing import Dict
 
 @dataclass()
 class LocationEntity:
@@ -9,7 +9,7 @@ class LocationEntity:
     lat: float
     lon: float
     zone: str
-    tags: List[str]
+    tags: Dict[str, bool]
 
     @classmethod
     def from_dict(cls, data: dict) -> "LocationEntity":
@@ -20,7 +20,7 @@ class LocationEntity:
             lat = data.get("lat", 0.0),
             lon = data.get("lon", 0.0),
             zone = data.get("zone", ""),
-            tags = data.get("tags", [])
+            tags = data.get("tags", {})
         )
         return devolver
 

@@ -1,0 +1,37 @@
+[
+  {
+    "id": "circuit_de_la_prairie_caen",
+    "name": "Circuit de la Prairie, Caen",
+    "lat": 49.1829,
+    "lon": -0.3707,
+    "country": "FR"
+  },
+  {
+    "id": "circuit_des_essarts",
+    "name": "Circuit des Essarts",
+    "lat": 49.2880,
+    "lon": 1.2390,
+    "country": "FR"
+  },
+  {
+    "id": "col_du_galibier_serre_chevalier",
+    "name": "Col du Galibier (Serre Chevalier)",
+    "lat": 45.0642,
+    "lon": 6.4089,
+    "country": "FR"
+  },
+  {
+    "id": "maubourguet_pays_du_val_d_adour",
+    "name": "Maubourguet",
+    "lat": 43.4695,
+    "lon": -0.0350,
+    "country": "FR"
+  },
+  {
+    "id": "waregem_compiegne",
+    "name": "Compiègne",
+    "lat": 49.4179,
+    "lon": 2.8261,
+    "country": "FR"
+  }
+]

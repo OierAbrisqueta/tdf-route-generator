@@ -1,12 +1,13 @@
 import json
 from pathlib import Path
-from typing import List, Dict, Optional
-from functools import lru_cache
+from typing import List
+from dataclasses import replace
+from app.domain.models.LocationEntity import LocationEntity
 
 class LocationRepository:
 
     instance = None
-    locations: List[Dict] = []
+    locations: List[LocationEntity] = []
     loaded: bool = False
 
     def __new__(cls, *args, **kwargs) -> 'LocationRepository':
@@ -22,7 +23,9 @@ class LocationRepository:
     def load_locations(self) -> None:
         try:
             with open(self.file_path, 'r', encoding='utf-8') as f:
-                self.locations = json.load(f)
+                raw_locations = json.load(f)
+
+            self.locations = [LocationEntity.from_dict(loc) for loc in raw_locations]
             self.loaded = True
         except FileNotFoundError:
             raise FileNotFoundError("Archivo no encontrado")
@@ -33,14 +36,14 @@ class LocationRepository:
         return self.locations
 
     def get_by_zone(self, zone: str):
-        return [loc for loc in self.locations if loc.get('zone') == zone]
+        return [loc for loc in self.locations if loc.zone == zone]
 
     def get_by_tags_all(self, tags: list[str]):
         non_repeated = set(tags)
         devolver = []
 
         for loc in self.locations:
-            loc_tags = loc.get("tags", {})
+            loc_tags = loc.tags
             if all(loc_tags.get(tag, False) for tag in non_repeated):
                 devolver.append(loc)
 
@@ -51,7 +54,7 @@ class LocationRepository:
         devolver = []
 
         for loc in self.locations:
-            loc_tags = loc.get("tags", {})
+            loc_tags = loc.tags
             if any(loc_tags.get(tag, False) for tag in non_repeated):
                 devolver.append(loc)
 
@@ -59,8 +62,8 @@ class LocationRepository:
 
     def get_by_id(self, id: str):
         for loc in self.locations:
-            if loc.get("id") == id:
-                return loc.copy()
+            if loc.id == id:
+                return replace(loc)
         return None
 
     def reload(self):

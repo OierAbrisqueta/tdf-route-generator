@@ -25,7 +25,7 @@ class RouteGenerator:
 
         #Select initial location
         if request.foreign_start:
-            foreign_starts = [loc for loc in start_locations if loc.get("zone") == "FOREIGN"]
+            foreign_starts = [loc for loc in start_locations if loc.zo == "FOREIGN"]
             start_location = random.choice(foreign_starts) if foreign_starts else random.choice(start_locations)
         else:
             france_starts = [loc for loc in start_locations if loc.get("zone") != "FOREIGN"]
@@ -107,7 +107,7 @@ class RouteGenerator:
         all_locations = self.location_repository.get_locations()
         start_locations = [
             loc for loc in all_locations
-            if loc.get("tags", {}).get("can_start", False)
+            if loc.tags.get("can_start", False)
         ]
         return start_locations
 
@@ -115,7 +115,7 @@ class RouteGenerator:
         all_locations = self.location_repository.get_locations()
         finish = [
             loc for loc in all_locations
-            if loc.get("tags", {}).get("can_finish", False)
+            if loc.tags.get("can_finish", False)
         ]
         return finish
 
@@ -123,14 +123,14 @@ class RouteGenerator:
         all_locations = self.location_repository.get_locations()
         return [
             loc for loc in all_locations
-            if loc.get("tags", {}).get("mountain_finish", False)
+            if loc.tags.get("mountain_finish", False)
         ]
 
     def _get_tt_locations(self) -> List[Dict[str, Any]]:
         all_locations = self.location_repository.get_locations()
         return [
             loc for loc in all_locations
-            if loc.get("tags", {}).get("tt_ok", False)
+            if loc.tags.get("tt_ok", False)
         ]
 
     def _get_locations_by_zone(self, zone: str) -> List[Dict[str, Any]]:
