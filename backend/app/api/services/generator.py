@@ -1,7 +1,8 @@
-from typing import List, Dict, Any
+from typing import List
 import random
-from ..schemas.requests import GenerateRequest
-from ..schemas.response import GenerateResponse, Stage, StageType, Location, TourSummary
+from app.api.schemas.requests import GenerateRequest
+from app.api.schemas.response import GenerateResponse, Stage, StageType, Location, TourSummary
+from app.domain.models.LocationEntity import LocationEntity
 
 class RouteGenerator:
 
@@ -25,10 +26,10 @@ class RouteGenerator:
 
         #Select initial location
         if request.foreign_start:
-            foreign_starts = [loc for loc in start_locations if loc.zo == "FOREIGN"]
+            foreign_starts = [loc for loc in start_locations if loc.zone == "FOREIGN"]
             start_location = random.choice(foreign_starts) if foreign_starts else random.choice(start_locations)
         else:
-            france_starts = [loc for loc in start_locations if loc.get("zone") != "FOREIGN"]
+            france_starts = [loc for loc in start_locations if loc.zone != "FOREIGN"]
             start_location = random.choice(france_starts) if france_starts else random.choice(start_locations)
 
         #Determine the number of stages of the foreign start
@@ -85,8 +86,8 @@ class RouteGenerator:
             stage = Stage(
                 stage_number=stage_num,
                 stage_type=stage_type,
-                start_location=self._location_dict_to_schema(stage_start_location),
-                finish_location=self._location_dict_to_schema(finish_location),
+                start_location=self._location_entity_to_schema(stage_start_location),
+                finish_location=self._location_entity_to_schema(finish_location),
                 distance_km=distance_km,
                 transfer_km=transfer_km,
                 rest_day_after=rest_day_after
@@ -103,7 +104,7 @@ class RouteGenerator:
             summary=summary
         )
 
-    def _get_start_locations(self) -> List[Dict[str, Any]]:
+    def _get_start_locations(self) -> List[LocationEntity]:
         all_locations = self.location_repository.get_locations()
         start_locations = [
             loc for loc in all_locations
@@ -111,7 +112,7 @@ class RouteGenerator:
         ]
         return start_locations
 
-    def _get_finish_locations(self) -> List[Dict[str, Any]]:
+    def _get_finish_locations(self) -> List[LocationEntity]:
         all_locations = self.location_repository.get_locations()
         finish = [
             loc for loc in all_locations
@@ -119,21 +120,21 @@ class RouteGenerator:
         ]
         return finish
 
-    def _get_mountain_finishes(self) -> List[Dict[str, Any]]:
+    def _get_mountain_finishes(self) -> List[LocationEntity]:
         all_locations = self.location_repository.get_locations()
         return [
             loc for loc in all_locations
             if loc.tags.get("mountain_finish", False)
         ]
 
-    def _get_tt_locations(self) -> List[Dict[str, Any]]:
+    def _get_tt_locations(self) -> List[LocationEntity]:
         all_locations = self.location_repository.get_locations()
         return [
             loc for loc in all_locations
             if loc.tags.get("tt_ok", False)
         ]
 
-    def _get_locations_by_zone(self, zone: str) -> List[Dict[str, Any]]:
+    def _get_locations_by_zone(self, zone: str) -> List[LocationEntity]:
         return self.location_repository.get_by_zone(zone)
 
     def _determine_stage_type(self, stage_num: int, total_stages: int, mountain_bias: float,
@@ -157,12 +158,12 @@ class RouteGenerator:
         else:
             return StageType.FLAT
 
-    def _select_finish_location(self, stage_type: StageType, stage_num: int, total_stages: int, in_foreign_block : bool, mountain_finishes: List[Dict[str, Any]], tt_locations: List[Dict[str, Any]], all_finish_locations: List[Dict[str, Any]],
-            previous_location: Dict[str, Any]) -> Dict[str, Any]:
+    def _select_finish_location(self, stage_type: StageType, stage_num: int, total_stages: int, in_foreign_block : bool, mountain_finishes: List[LocationEntity], tt_locations: List[LocationEntity], all_finish_locations: List[LocationEntity],
+            previous_location: LocationEntity) -> LocationEntity:
 
         # Last stage has to be Paris
         if stage_num == total_stages:
-            paris = [loc for loc in all_finish_locations if loc.get("name", "").lower() == "paris"]
+            paris = [loc for loc in all_finish_locations if loc.name.lower() == "paris"]
             if paris:
                 return paris[0]
 
@@ -177,33 +178,33 @@ class RouteGenerator:
 
         #If we are in the foreign starting block, stages must finish abroad
         if in_foreign_block:
-            foreign_candidates = [loc for loc in candidates if loc.get("zone") == "FOREIGN"]
+            foreign_candidates = [loc for loc in candidates if loc.zone == "FOREIGN"]
             #If the specific type has no foreign options, fall back to any foreign location.
             candidates = foreign_candidates if foreign_candidates else [
-                loc for loc in all_finish_locations if loc.get("zone") == "FOREIGN"
+                loc for loc in all_finish_locations if loc.zone == "FOREIGN"
             ]
         else:
-            national_candidates = [loc for loc in candidates if loc.get("zone") != "FOREIGN"]
+            national_candidates = [loc for loc in candidates if loc.zone != "FOREIGN"]
             #If the specific type has no national options, fall back to any foreign location.
             candidates = national_candidates if national_candidates else [
-                loc for loc in all_finish_locations if loc.get("zone") != "FOREIGN"
+                loc for loc in all_finish_locations if loc.zone != "FOREIGN"
             ]
 
         #Do not repeat location
-        candidates = [loc for loc in candidates if loc.get("id") != previous_location.get("id")]
+        candidates = [loc for loc in candidates if loc.id != previous_location.id]
 
         if not candidates:
             candidates = all_finish_locations
 
         return random.choice(candidates)
 
-    def _calculate_stage_distance(self, start: Dict[str, Any], finish: Dict[str, Any], stage_type: StageType) -> float:
+    def _calculate_stage_distance(self, start: LocationEntity, finish: LocationEntity, stage_type: StageType) -> float:
         """The Harversine Formula is applied"""
         #Calculate line distance between places (orientative)
         from math import radians, sin, cos, sqrt, atan2
 
-        lat1, lon1 = radians(start.get("lat", 0)), radians(start.get("lon", 0))
-        lat2, lon2 = radians(finish.get("lat", 0)), radians(finish.get("lon", 0))
+        lat1, lon1 = radians(start.lat), radians(start.lon)
+        lat2, lon2 = radians(finish.lat), radians(finish.lon)
 
         dlat = lat2 - lat1
         dlon = lon2 - lon1
@@ -224,13 +225,13 @@ class RouteGenerator:
         else:
             return max(150.0, min(250.0, straight_line * 1.3))
 
-    def _calculate_transfer_distance(self, previous_finish: Dict[str, Any], current_start: Dict[str, Any]) -> float:
+    def _calculate_transfer_distance(self, previous_finish: LocationEntity, current_start: LocationEntity) -> float:
         """The Harversine Formula is applied"""
         #Calculates de transfer distance
         from math import radians, sin, cos, sqrt, atan2
 
-        lat1, lon1 = radians(previous_finish.get("lat", 0)), radians(previous_finish.get("lon", 0))
-        lat2, lon2 = radians(current_start.get("lat", 0)), radians(current_start.get("lon", 0))
+        lat1, lon1 = radians(previous_finish.lat), radians(previous_finish.lon)
+        lat2, lon2 = radians(current_start.lat), radians(current_start.lon)
 
         dlat = lat2 - lat1
         dlon = lon2 - lon1
@@ -255,14 +256,14 @@ class RouteGenerator:
     def _is_rest_day(self, stage_num: int) -> bool:
         return stage_num in [9, 15]
 
-    def _location_dict_to_schema(self, loc: Dict[str, Any]) -> Location:
+    def _location_entity_to_schema(self, loc: LocationEntity) -> Location:
         return Location(
-            id=loc.get("id", ""),
-            name=loc.get("name", ""),
-            country=loc.get("country", ""),
-            zone=loc.get("zone", ""),
-            lat=loc.get("lat", 0.0),
-            lon=loc.get("lon", 0.0)
+            id=loc.id,
+            name=loc.name,
+            country=loc.country,
+            zone=loc.zone,
+            lat=loc.lat,
+            lon=loc.lon
         )
 
     def _create_summary(self, stages: List[Stage]) -> TourSummary:
