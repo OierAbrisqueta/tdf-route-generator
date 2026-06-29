@@ -27,10 +27,12 @@ class RouteGenerator:
 
         stages: List[Stage] = []
 
-        start_locations = self._get_start_locations()
-        mountain_finishes = self._get_mountain_finishes()
-        tt_locations = self._get_tt_locations()
-        all_finish_locations = self._get_finish_locations()
+        all_locations = self.load_locations()
+
+        start_locations = all_locations.get("start")
+        mountain_finishes = all_locations.get("mountain")
+        tt_locations = all_locations.get("tt")
+        all_finish_locations = all_locations.get("finish")
 
         #Select initial location
         if request.foreign_start:
@@ -51,17 +53,21 @@ class RouteGenerator:
         itt_remaining = request.itt_count
         ttt_done = not request.ttt_enabled
 
+        stages_history = []
+
         for stage_num in range(1, request.stages + 1):
 
             in_foreign_block = stage_num <= number_foreign_stages
 
             stage_type = self._determine_stage_type(
-                stage_num=stage_num,
-                total_stages=request.stages,
-                mountain_bias=request.mountain_bias,
-                itt_remaining=itt_remaining,
-                ttt_done=ttt_done
+                stage_num = stage_num,
+                total_stages = request.stages,
+                mountain_bias = request.mountain_bias,
+                itt_remaining = itt_remaining,
+                ttt_done = ttt_done,
+                recent_types = stages_history
             )
+            stages_history.append(stage_type)
 
             if stage_type == StageType.ITT:
                 itt_remaining -= 1
@@ -112,35 +118,34 @@ class RouteGenerator:
             summary=summary
         )
 
-    def _get_start_locations(self) -> List[LocationEntity]:
+    def load_locations(self):
         all_locations = self.location_repository.get_locations()
         start_locations = [
             loc for loc in all_locations
             if loc.tags.get("can_start", False)
         ]
-        return start_locations
 
-    def _get_finish_locations(self) -> List[LocationEntity]:
-        all_locations = self.location_repository.get_locations()
         finish = [
             loc for loc in all_locations
             if loc.tags.get("can_finish", False)
         ]
-        return finish
 
-    def _get_mountain_finishes(self) -> List[LocationEntity]:
-        all_locations = self.location_repository.get_locations()
-        return [
+        mountain = [
             loc for loc in all_locations
             if loc.tags.get("mountain_finish", False)
         ]
 
-    def _get_tt_locations(self) -> List[LocationEntity]:
-        all_locations = self.location_repository.get_locations()
-        return [
+        tt = [
             loc for loc in all_locations
             if loc.tags.get("tt_ok", False)
         ]
+
+        return {
+            "start": start_locations,
+            "finish": finish,
+            "mountain": mountain,
+            "tt": tt
+        }
 
     def _get_locations_by_zone(self, zone: str) -> List[LocationEntity]:
         return self.location_repository.get_by_zone(zone)
@@ -259,24 +264,10 @@ class RouteGenerator:
             StageType.FLAT: random.uniform(1.2, 1.4),
         }.get(stage_type)
 
-        return round(straight_line * road_reality, 2)
+        return round(max(min_d, min(max_d, straight_line * road_reality)), 2)
 
     def _calculate_transfer_distance(self, previous_finish: LocationEntity, current_start: LocationEntity) -> float:
-        """The Harversine Formula is applied"""
-        #Calculates de transfer distance
-        from math import radians, sin, cos, sqrt, atan2
-
-        lat1, lon1 = radians(previous_finish.lat), radians(previous_finish.lon)
-        lat2, lon2 = radians(current_start.lat), radians(current_start.lon)
-
-        dlat = lat2 - lat1
-        dlon = lon2 - lon1
-
-        a = sin(dlat/2)**2 + cos(lat1) * cos(lat2) * sin(dlon/2)**2
-        c = 2 * atan2(sqrt(a), sqrt(1-a))
-        r = 6371
-
-        return r * c
+        return self._haversine(previous_finish, current_start)
 
     def _should_have_rest_day(self, stage_num: int, total_stages: int) -> bool:
         """Determines whether the next day should be a rest day or not"""
@@ -284,13 +275,11 @@ class RouteGenerator:
         if total_stages >= 21:
             return stage_num in [9, 15]
         elif total_stages >= 14:
+            rest = [round(total_stages * 0.4), round(total_stages * 0.7)]
             return stage_num in [7, 12]
         elif total_stages >= 7:
-            return stage_num == 5
+            return stage_num == round(total_stages * 0.5)
         return False
-
-    def _is_rest_day(self, stage_num: int) -> bool:
-        return stage_num in [9, 15]
 
     def _location_entity_to_schema(self, loc: LocationEntity) -> Location:
         return Location(
@@ -339,7 +328,8 @@ class RouteGenerator:
             elif stage.distance_km > 250:
                 score -= 2
 
+        penalty = 15
         if len(countries) > 5:
-            return 0
+            score -= penalty * (len(countries) - 5)
 
         return min(100, max(0, score))
