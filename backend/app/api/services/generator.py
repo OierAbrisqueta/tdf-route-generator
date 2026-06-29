@@ -4,6 +4,14 @@ from app.api.schemas.requests import GenerateRequest
 from app.api.schemas.response import GenerateResponse, Stage, StageType, Location, TourSummary
 from app.domain.models.LocationEntity import LocationEntity
 
+DISTANCE_RULES = {
+        StageType.ITT: {20, 50},
+        StageType.TTT: {20, 40},
+        StageType.MOUNTAIN: {130, 220},
+        StageType.HILLY: {160, 210},
+        StageType.FLAT: {170, 230}
+    }
+
 class RouteGenerator:
 
     def __init__(self, location_repository):
@@ -138,25 +146,49 @@ class RouteGenerator:
         return self.location_repository.get_by_zone(zone)
 
     def _determine_stage_type(self, stage_num: int, total_stages: int, mountain_bias: float,
-            itt_remaining: int, ttt_done: bool) -> StageType:
+            itt_remaining: int, ttt_done: bool, recent_types = list[StageType]) -> StageType:
+
+        #No more than 3 mountain stages in a row
+        if recent_types[-2:].count(StageType.MOUNTAIN) >= 3:
+            return random.choice([StageType.HILLY, StageType.FLAT])
+
+        #Flat/Transition after mountain block
+        if self._is_end_of_mountain_block(recent_types):
+            return StageType.FLAT
+
+        progress = stage_num / total_stages
+
         #The first stage could be a ttt(team time trial)
         if stage_num == 1 and not ttt_done:
-            if random.random() < 0.5:
+            if random.random() < 0.3:
                 return StageType.TTT
 
         #There usually is an individual time trial at the end
-        if itt_remaining > 0 and stage_num > total_stages - 5:
-            if random.random() < 0.4:
+        if itt_remaining > 0 and stage_num == total_stages - 1:
+            if random.random() < 0.8:
                 return StageType.ITT
+
+        is_mountain_block = (0.35 < progress < 0.55) or (0.7 < progress < 0.9)
+        real_bias = mountain_bias * (2 if is_mountain_block else 0.5)
 
         #Determines the type based on the mountain_bias
         roll = random.random()
-        if roll < mountain_bias * 0.4:
+        if roll < real_bias * 0.4:
             return StageType.MOUNTAIN
-        elif roll < mountain_bias * 0.4 + 0.3:
+        elif roll < real_bias * 0.4 + 0.3:
             return StageType.HILLY
         else:
             return StageType.FLAT
+
+    def _is_end_of_mountain_block(self, recent_types: list[StageType]):
+        streak = 0
+        for stage in reversed(recent_types):
+            if stage == StageType.MOUNTAIN:
+                streak += 1
+            else:
+                break
+
+        return streak >= 3
 
     def _select_finish_location(self, stage_type: StageType, stage_num: int, total_stages: int, in_foreign_block : bool, mountain_finishes: List[LocationEntity], tt_locations: List[LocationEntity], all_finish_locations: List[LocationEntity],
             previous_location: LocationEntity) -> LocationEntity:
@@ -198,9 +230,9 @@ class RouteGenerator:
 
         return random.choice(candidates)
 
-    def _calculate_stage_distance(self, start: LocationEntity, finish: LocationEntity, stage_type: StageType) -> float:
+    def _haversine(self, start, finish) -> float:
         """The Harversine Formula is applied"""
-        #Calculate line distance between places (orientative)
+        # Calculate line distance between places (orientative)
         from math import radians, sin, cos, sqrt, atan2
 
         lat1, lon1 = radians(start.lat), radians(start.lon)
@@ -215,15 +247,19 @@ class RouteGenerator:
 
         straight_line = r * c
 
-        #Based on stage type
-        if stage_type == StageType.ITT:
-            return max(20.0, min(60.0, straight_line * 0.5))
-        elif stage_type == StageType.TTT:
-            return max(25.0, min(55.0, straight_line * 0.5))
-        elif stage_type == StageType.MOUNTAIN:
-            return max(100.0, min(200.0, straight_line * 1.5))
-        else:
-            return max(150.0, min(250.0, straight_line * 1.3))
+        return straight_line
+
+    def _calculate_stage_distance(self, start: LocationEntity, finish: LocationEntity, stage_type: StageType) -> float:
+        straight_line = self._haversine(start, finish)
+        min_d, max_d = DISTANCE_RULES[stage_type]
+
+        road_reality = {
+            StageType.MOUNTAIN: random.uniform(1.6, 2.2),
+            StageType.HILLY: random.uniform(1.3, 1.7),
+            StageType.FLAT: random.uniform(1.2, 1.4),
+        }.get(stage_type)
+
+        return round(straight_line * road_reality, 2)
 
     def _calculate_transfer_distance(self, previous_finish: LocationEntity, current_start: LocationEntity) -> float:
         """The Harversine Formula is applied"""
