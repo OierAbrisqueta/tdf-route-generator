@@ -200,7 +200,7 @@ class RouteGenerator:
 
         # Last stage has to be Paris
         if stage_num == total_stages:
-            paris = [loc for loc in all_finish_locations if loc.name.lower() == "paris"]
+            paris = [loc for loc in all_finish_locations if loc.id.lower() == "paris"]
             if paris:
                 return paris[0]
 
@@ -227,8 +227,21 @@ class RouteGenerator:
                 loc for loc in all_finish_locations if loc.zone != "FOREIGN"
             ]
 
+        is_finish_allowed = previous_location.tags.get("can_finish")
+
         #Do not repeat location
-        candidates = [loc for loc in candidates if loc.id != previous_location.id]
+        if stage_type == StageType.MOUNTAIN:
+            candidates = [loc for loc in candidates if loc.id != previous_location.id]
+        elif stage_type == StageType.FLAT or stage_type == StageType.HILLY:
+            if random.random() <= 0.1 and is_finish_allowed:
+                candidates = [previous_location]
+            else:
+                candidates = [loc for loc in candidates if loc.id != previous_location.id]
+        else:
+            if random.random() <= 0.4 and is_finish_allowed:
+                candidates = [previous_location]
+            else:
+                candidates = [loc for loc in candidates if loc.id != previous_location.id]
 
         if not candidates:
             candidates = all_finish_locations
@@ -257,6 +270,10 @@ class RouteGenerator:
     def _calculate_stage_distance(self, start: LocationEntity, finish: LocationEntity, stage_type: StageType) -> float:
         straight_line = self._haversine(start, finish)
         min_d, max_d = DISTANCE_RULES[stage_type]
+
+        #In case the start and finish locations are the same
+        if start.id == finish.id:
+            return round(max(min_d, max_d, 2))
 
         road_reality = {
             StageType.MOUNTAIN: random.uniform(1.6, 2.2),
