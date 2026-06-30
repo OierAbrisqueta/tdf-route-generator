@@ -3,6 +3,7 @@ import random
 from app.api.schemas.requests import GenerateRequest
 from app.api.schemas.response import GenerateResponse, Stage, StageType, Location, TourSummary
 from app.domain.models.LocationEntity import LocationEntity
+import math
 
 DISTANCE_RULES = {
         StageType.ITT: (20, 50),
@@ -73,6 +74,7 @@ class RouteGenerator:
                 itt_remaining -= 1
             elif stage_type == StageType.TTT:
                 ttt_done = True
+                itt_remaining -= 1
 
             finish_location = self._select_finish_location(
                 stage_type = stage_type,
@@ -151,7 +153,7 @@ class RouteGenerator:
         return self.location_repository.get_by_zone(zone)
 
     def _determine_stage_type(self, stage_num: int, total_stages: int, mountain_bias: float,
-            itt_remaining: int, ttt_done: bool, recent_types = list[StageType]) -> StageType:
+            itt_remaining: int, ttt_done: bool, recent_types:  list[StageType]) -> StageType:
 
         #Flat/Transition after mountain block
         if self._is_end_of_mountain_block(recent_types):
@@ -163,6 +165,11 @@ class RouteGenerator:
         if stage_num == 1 and not ttt_done:
             if random.random() < 0.3:
                 return StageType.TTT
+
+        #A ITT stage in the 8th or 9th stage
+        if itt_remaining > 0 and stage_num in [8,9] and not(any(StageType.ITT in recent_types[-2:])):
+            if random.random() < 0.6:
+                return StageType.ITT
 
         #There usually is an individual time trial at the end
         if itt_remaining > 0 and stage_num == total_stages - 1:
@@ -242,12 +249,31 @@ class RouteGenerator:
         if not candidates:
             candidates = all_finish_locations
 
-        return random.choice(candidates)
+        return self._weighet_location_choice(previous_location, candidates)
+
+    def _weighet_location_choice(self, previous_location: LocationEntity, candidates: List[LocationEntity]) -> LocationEntity:
+        weights = []
+
+        ideal_distance = 50
+        sigma = 60
+
+        for candidate in candidates:
+            d = self._haversine(previous_location, candidate)
+
+            #Gaussian decay formula
+            weight = math.exp(-0.5 * ((d - ideal_distance) / sigma) ** 2)
+
+            #Extra penalty for absurd distances
+            if d > 250:
+                weight *= 0.05
+
+            weights.append(weight)
+
+        return random.choices(candidates, weights = weights, k = 1)[0]
 
     def _haversine(self, start, finish) -> float:
         """The Harversine Formula is applied"""
         # Calculate line distance between places (orientative)
-        from math import radians, sin, cos, sqrt, atan2
 
         lat1, lon1 = radians(start.lat), radians(start.lon)
         lat2, lon2 = radians(finish.lat), radians(finish.lon)
