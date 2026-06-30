@@ -5,11 +5,11 @@ from app.api.schemas.response import GenerateResponse, Stage, StageType, Locatio
 from app.domain.models.LocationEntity import LocationEntity
 
 DISTANCE_RULES = {
-        StageType.ITT: {20, 50},
-        StageType.TTT: {20, 40},
-        StageType.MOUNTAIN: {130, 220},
-        StageType.HILLY: {160, 210},
-        StageType.FLAT: {170, 230}
+        StageType.ITT: (20, 50),
+        StageType.TTT: (20, 40),
+        StageType.MOUNTAIN: (130, 220),
+        StageType.HILLY: (160, 210),
+        StageType.FLAT: (170, 230)
     }
 
 class RouteGenerator:
@@ -153,10 +153,6 @@ class RouteGenerator:
     def _determine_stage_type(self, stage_num: int, total_stages: int, mountain_bias: float,
             itt_remaining: int, ttt_done: bool, recent_types = list[StageType]) -> StageType:
 
-        #No more than 3 mountain stages in a row
-        if recent_types[-2:].count(StageType.MOUNTAIN) >= 3:
-            return random.choice([StageType.HILLY, StageType.FLAT])
-
         #Flat/Transition after mountain block
         if self._is_end_of_mountain_block(recent_types):
             return StageType.FLAT
@@ -273,7 +269,7 @@ class RouteGenerator:
 
         #In case the start and finish locations are the same
         if start.id == finish.id:
-            return round(max(min_d, max_d, 2))
+            return round(random.uniform(min_d, max_d), 2)
 
         road_reality = {
             StageType.MOUNTAIN: random.uniform(1.6, 2.2),
@@ -293,7 +289,7 @@ class RouteGenerator:
             return stage_num in [9, 15]
         elif total_stages >= 14:
             rest = [round(total_stages * 0.4), round(total_stages * 0.7)]
-            return stage_num in [7, 12]
+            return stage_num in rest
         elif total_stages >= 7:
             return stage_num == round(total_stages * 0.5)
         return False
