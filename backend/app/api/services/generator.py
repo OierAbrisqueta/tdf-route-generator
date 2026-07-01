@@ -168,13 +168,12 @@ class RouteGenerator:
 
         #A ITT stage in the 8th or 9th stage
         if itt_remaining > 0 and stage_num in [8,9] and not(any(StageType.ITT in recent_types[-2:])):
-            if random.random() < 0.6:
+            if random.random() < 0.9:
                 return StageType.ITT
 
         #There usually is an individual time trial at the end
         if itt_remaining > 0 and stage_num == total_stages - 1:
-            if random.random() < 0.8:
-                return StageType.ITT
+            return StageType.ITT
 
         is_mountain_block = (0.35 < progress < 0.55) or (0.7 < progress < 0.9)
         real_bias = mountain_bias * (2 if is_mountain_block else 0.5)
@@ -275,14 +274,14 @@ class RouteGenerator:
         """The Harversine Formula is applied"""
         # Calculate line distance between places (orientative)
 
-        lat1, lon1 = radians(start.lat), radians(start.lon)
-        lat2, lon2 = radians(finish.lat), radians(finish.lon)
+        lat1, lon1 = math.radians(start.lat), math.radians(start.lon)
+        lat2, lon2 = math.radians(finish.lat), math.radians(finish.lon)
 
         dlat = lat2 - lat1
         dlon = lon2 - lon1
 
-        a = sin(dlat / 2) ** 2 + cos(lat1) * cos(lat2) * sin(dlon / 2) ** 2
-        c = 2 * atan2(sqrt(a), sqrt(1 - a))
+        a = math.sin(dlat / 2) ** 2 + math.cos(lat1) * math.cos(lat2) * math.sin(dlon / 2) ** 2
+        c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
         r = 6371  # Earth Radius
 
         straight_line = r * c
@@ -293,14 +292,20 @@ class RouteGenerator:
         straight_line = self._haversine(start, finish)
         min_d, max_d = DISTANCE_RULES[stage_type]
 
+        #Ensures that for every pair of start and finish locations the distance is the same
+        pair_seed = f"{start.id}_{finish.id}"
+        local = random.Random(pair_seed)
+
         #In case the start and finish locations are the same
         if start.id == finish.id:
-            return round(random.uniform(min_d, max_d), 2)
+            return round(local.uniform(min_d, max_d), 2)
 
         road_reality = {
-            StageType.MOUNTAIN: random.uniform(1.6, 2.2),
-            StageType.HILLY: random.uniform(1.3, 1.7),
-            StageType.FLAT: random.uniform(1.2, 1.4),
+            StageType.MOUNTAIN: local.uniform(1.6, 2.2),
+            StageType.HILLY: local.uniform(1.3, 1.7),
+            StageType.FLAT: local.uniform(1.2, 1.4),
+            StageType.ITT: local.uniform(1.1, 1.3),
+            StageType.TTT: local.uniform(1.1, 1.3)
         }.get(stage_type)
 
         return round(max(min_d, min(max_d, straight_line * road_reality)), 2)
@@ -355,6 +360,7 @@ class RouteGenerator:
 
     def _calculate_score(self, stages: List[Stage], countries: List[str]) -> float:
         score: float = 50
+        total_distance = 0
 
         score += len(countries) * 5
 
@@ -366,9 +372,13 @@ class RouteGenerator:
                 score -= 2
             elif stage.distance_km > 250:
                 score -= 2
+            total_distance += stage.distance_km
 
         penalty = 15
         if len(countries) > 5:
             score -= penalty * (len(countries) - 5)
+
+        if total_distance > 3500:
+            score = 0
 
         return min(100, max(0, score))
