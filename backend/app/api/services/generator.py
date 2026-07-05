@@ -167,7 +167,7 @@ class RouteGenerator:
                 return StageType.TTT
 
         #A ITT stage in the 8th or 9th stage
-        if itt_remaining > 0 and stage_num in [8,9] and not(any(StageType.ITT in recent_types[-2:])):
+        if itt_remaining > 0 and stage_num in [8,9] and not(StageType.ITT in recent_types[-2:]):
             if random.random() < 0.9:
                 return StageType.ITT
 

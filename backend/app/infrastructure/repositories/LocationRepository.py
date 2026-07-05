@@ -15,8 +15,11 @@ class LocationRepository:
             cls.instance = super().__new__(cls)
         return cls.instance
 
-    def __init__(self, path: str = "data/locations.json"):
+    def __init__(self, path: str = None):
         if not self.loaded:
+            if path is None:
+                project_root = Path(__file__).resolve().parents[4]
+                path = project_root / "data" / "locations.json"
             self.file_path = Path(path)
             self.load_locations()
 
