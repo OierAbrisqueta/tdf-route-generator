@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-const DEFAULT_SETTINGS = {
+const DEFAULTS = {
   stages: 21,
   foreign_start: true,
   foreign_stages_min: 3,
@@ -12,7 +12,7 @@ const DEFAULT_SETTINGS = {
 }
 
 function SettingsForm({ onGenerate, loading }) {
-  const [settings, setSettings] = useState(DEFAULT_SETTINGS)
+  const [settings, setSettings] = useState(DEFAULTS)
 
   const updateField = (field, value) => {
     setSettings((prev) => ({ ...prev, [field]: value }))
@@ -131,7 +131,7 @@ function SettingsForm({ onGenerate, loading }) {
       <button
         type="submit"
         disabled={loading}
-        className="bg-blue-600 text-white px-4 py-2 rounded disabled:opacity-50"
+        className="w-full bg-blue-600 text-white px-4 py-2 rounded disabled:opacity-50 hover:bg-blue-700"
       >
         {loading ? 'Generating...' : 'Generate route'}
       </button>
