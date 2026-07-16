@@ -12,6 +12,14 @@ L.Icon.Default.mergeOptions({
   shadowUrl: markerShadow,
 })
 
+const STAGE_COLOURS = {
+  FLAT: '#43CC73',
+  HILLY: '#F0A726',
+  MOUNTAIN: '#D13030',
+  ITT: '#2A6EDB',
+  TTT: '#2A6EDB'
+}
+
 function getLocations(stages) {
   const locationsById = new Map()
 
@@ -63,7 +71,7 @@ function RouteMap({ stages = [] }) {
         />
 
         {stages.map((stage) => {
-          const { stage_number, start_location, finish_location } = stage
+          const { stage_number, start_location, finish_location, stage_type } = stage
 
           return (
             <Polyline
@@ -72,7 +80,7 @@ function RouteMap({ stages = [] }) {
                 [start_location.lat, start_location.lon],
                 [finish_location.lat, finish_location.lon],
               ]}
-              color="#dc2626"
+              color={STAGE_COLOURS[stage_type]}
             />
           )
         })}
