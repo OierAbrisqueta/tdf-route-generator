@@ -1,20 +1,24 @@
-# ---- Python ----
+#Python
 __pycache__/
 *.py[cod]
 *$py.class
 
-# Virtual environments
+#Virtual environments
 venv/
 .venv/
 env/
 ENV/
+.env
+.env.*
+!.env.example
+Thumbs.db
 
-# Packaging / build
+#Packaging / build
 build/
 dist/
 *.egg-info/
 
-# ---- Testing / coverage ----
+#Testing / coverage
 .pytest_cache/
 .coverage
 .coverage.*
@@ -22,29 +26,37 @@ htmlcov/
 .tox/
 .nox/
 
-# ---- Logs ----
+#Logs
+logs
 *.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
 
-# ---- OS ----
+#OS
 .DS_Store
-Thumbs.db
 
-# ---- IDEs ----
+#IDEs
 .vscode/
 .idea/
 *.iml
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
 
-# ---- FastAPI / Uvicorn ----
-
+#FastAPI / Uvicorn
 *.pid
 
-# ---- Data artifacts (generados por scripts) ----
-data/_*
+#Data Files
 data/raw_locations*.txt
-data/geocode_cache*.json
-data/*.sqlite
-data/*.db
+data/geocode_cache.json
 
-# ---- Frontend ----
+#Node Frontend
 node_modules/
-dist/
+dist
+dist-ssr
+*.local
