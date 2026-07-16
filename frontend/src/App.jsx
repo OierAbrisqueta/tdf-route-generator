@@ -30,7 +30,9 @@ function App() {
         <p className="text-red-600 mt-4">{error}</p>
       )}
 
-      {result && (
+      {loading && <p className="mt-4 text-gray-500">Generating route...</p>}
+
+      {!loading && result && (
         <>
           <TourSummaryCard summary={result.summary} />
           <StageList stages={result.stages} />

@@ -5903,7 +5903,7 @@
     "tags": {
       "can_start": true,
       "can_finish": true,
-      "mountain_finish": true,
+      "mountain_finish": false,
       "tt_ok": false
     }
   },
