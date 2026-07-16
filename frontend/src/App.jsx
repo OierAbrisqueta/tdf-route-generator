@@ -3,6 +3,7 @@ import { generateRoute } from './api'
 import SettingsForm from "./components/SettingsForm.jsx";
 import TourSummaryCard from './components/TourSummaryCard';
 import StageList from "./components/StageList.jsx";
+import RouteMap from "./components/RouteMap.jsx";
 
 function App() {
   const [result, setResult] = useState(null)
@@ -35,6 +36,7 @@ function App() {
       {!loading && result && (
         <>
           <TourSummaryCard summary={result.summary} />
+          <RouteMap stages={result.stages} />
           <StageList stages={result.stages} />
         </>
       )}
