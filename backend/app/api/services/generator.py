@@ -76,26 +76,29 @@ class RouteGenerator:
                 ttt_done = True
                 itt_remaining -= 1
 
-            finish_location = self._select_finish_location(
-                stage_type = stage_type,
-                stage_num = stage_num,
-                total_stages = request.stages,
-                in_foreign_block = in_foreign_block,
-                mountain_finishes = mountain_finishes,
-                tt_locations = tt_locations,
-                all_finish_locations = all_finish_locations,
-                previous_location = previous_location
-            )
+            if stage_num == 1:
+                stage_start_location = start_location
+            else:
+                stage_start_location = self._select_start_location(in_foreign_block, start_locations, previous_location)
 
-            stage_start_location = previous_location if stage_num > 1 else start_location
-
-            #This distances are orientative
-            distance_km = self._calculate_stage_distance(stage_start_location, finish_location, stage_type)
             transfer_km = (
                 self._calculate_transfer_distance(previous_location, stage_start_location)
                 if stage_num > 1
                 else 0.0
             )
+
+            finish_location = self._select_finish_location(
+                stage_type=stage_type,
+                stage_num=stage_num,
+                total_stages=request.stages,
+                in_foreign_block=in_foreign_block,
+                mountain_finishes=mountain_finishes,
+                tt_locations=tt_locations,
+                all_finish_locations=all_finish_locations,
+                previous_location=previous_location
+            )
+
+            distance_km = self._calculate_stage_distance(stage_start_location, finish_location, stage_type)
 
             rest_day_after = self._should_have_rest_day(stage_num, request.stages)
 
@@ -248,27 +251,52 @@ class RouteGenerator:
         if not candidates:
             candidates = all_finish_locations
 
-        return self._weighet_location_choice(previous_location, candidates)
+        max_distances = {
+            StageType.FLAT: 200,
+            StageType.HILLY: 180,
+            StageType.MOUNTAIN: 150,
+            StageType.ITT: 60,
+            StageType.TTT: 60,
+        }
 
-    def _weighet_location_choice(self, previous_location: LocationEntity, candidates: List[LocationEntity]) -> LocationEntity:
+        return self._weighted_location_choice(previous_location, candidates, stage_type = stage_type, max_distance = max_distances.get(stage_type))
+
+    def _select_start_location(self, in_foreign_block: bool, all_start_locations: List[LocationEntity], previous_location: LocationEntity) -> LocationEntity:
+        if in_foreign_block:
+            candidates = [loc for loc in all_start_locations if loc.zone == "FOREIGN"]
+        else:
+            candidates = [loc for loc in all_start_locations if loc.zone != "FOREIGN"]
+
+        return self._weighted_location_choice(previous_location, candidates, max_distance = 700)
+
+    def _weighted_location_choice(self, previous_location, candidates, stage_type=None, max_distance=None):
+        ideal_distances = {
+            StageType.FLAT: 130,
+            StageType.HILLY: 110,
+            StageType.MOUNTAIN: 80,
+            StageType.ITT: 25,
+            StageType.TTT: 20,
+        }
+        ideal_distance = ideal_distances.get(stage_type, 100) if stage_type else 50
+        sigma = 50
+
         weights = []
-
-        ideal_distance = 50
-        sigma = 60
-
         for candidate in candidates:
             d = self._haversine(previous_location, candidate)
 
-            #Gaussian decay formula
-            weight = math.exp(-0.5 * ((d - ideal_distance) / sigma) ** 2)
+            if max_distance and d > max_distance:
+                weights.append(0.0)
+                continue
 
-            #Extra penalty for absurd distances
+            weight = math.exp(-0.5 * ((d - ideal_distance) / sigma) ** 2)
             if d > 250:
                 weight *= 0.05
-
             weights.append(weight)
 
-        return random.choices(candidates, weights = weights, k = 1)[0]
+        if all(w == 0.0 for w in weights):
+            return min(candidates, key=lambda loc: self._haversine(previous_location, loc))
+
+        return random.choices(candidates, weights=weights, k=1)[0]
 
     def _haversine(self, start, finish) -> float:
         """The Harversine Formula is applied"""
