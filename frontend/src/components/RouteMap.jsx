@@ -50,51 +50,49 @@ function RouteMap({ stages = [] }) {
   const center = getMapCenter(locations)
 
   if (!center) {
-    return (
-      <div className="mt-6 max-w-3xl rounded-lg border bg-gray-50 p-6 text-sm text-gray-500">
-        Map will appear once there are stages to display.
-      </div>
-    )
+    return null;
   }
 
   return (
-    <div className="mt-6 max-w-3xl">
-      <MapContainer
-        center={center}
-        zoom={6}
-        style={{ height: '500px', width: '100%' }}
-        className="rounded-lg border"
-      >
-        <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        />
+    <div className="border-[3px] border-tdf-text bg-white p-2 shadow-[4px_4px_0_0_#1A1A1A]">
+      <div className="border border-tdf-text/20">
+        <MapContainer
+          center={center}
+          zoom={6}
+          style={{ height: '600px', width: '100%' }}
+          className="z-0"
+        >
+          <TileLayer
+            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          />
 
-        {stages.map((stage) => {
-          const { stage_number, start_location, finish_location, stage_type } = stage
+          {stages.map((stage) => {
+            const { stage_number, start_location, finish_location, stage_type } = stage
 
-          return (
-            <Polyline
-              key={stage_number}
-              positions={[
-                [start_location.lat, start_location.lon],
-                [finish_location.lat, finish_location.lon],
-              ]}
-              color={STAGE_COLOURS[stage_type]}
-            />
-          )
-        })}
+            return (
+              <Polyline
+                key={stage_number}
+                positions={[
+                  [start_location.lat, start_location.lon],
+                  [finish_location.lat, finish_location.lon],
+                ]}
+                color={STAGE_COLOURS[stage_type]}
+              />
+            )
+          })}
 
-        {locations.map((loc) => (
-          <Marker key={loc.id} position={[loc.lat, loc.lon]}>
-            <Popup>
-              <strong>{loc.name}</strong>
-              <br />
-              {loc.country}
-            </Popup>
-          </Marker>
-        ))}
-      </MapContainer>
+          {locations.map((loc) => (
+            <Marker key={loc.id} position={[loc.lat, loc.lon]}>
+              <Popup>
+                <strong>{loc.name}</strong>
+                <br />
+                {loc.country}
+              </Popup>
+            </Marker>
+          ))}
+        </MapContainer>
+      </div>
     </div>
   )
 }

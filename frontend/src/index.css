@@ -1,1 +1,23 @@
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap');
 @import "tailwindcss";
+
+@theme {
+  --color-tdf-bg: #FAFAF8;
+  --color-tdf-text: #1A1A1A;
+  --color-tdf-yellow: #FFD700;
+  
+  --font-sans: 'Inter', sans-serif;
+  --font-heading: 'Bebas Neue', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+body {
+  background-color: var(--color-tdf-bg);
+  color: var(--color-tdf-text);
+  font-family: var(--font-sans);
+}
+
+.tabular-data {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
