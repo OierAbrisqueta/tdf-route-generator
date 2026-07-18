@@ -268,10 +268,10 @@
   {
     "id": "andorra",
     "name": "Andorra",
-    "country": "FR",
-    "lat": 42.6148017,
-    "lon": 2.0967819,
-    "zone": "FR_NE",
+    "country": "AD",
+    "lat": 42.5063,
+    "lon": 1.5218,
+    "zone": "FOREIGN",
     "tags": {
       "can_start": true,
       "can_finish": true,
@@ -2408,20 +2408,6 @@
     }
   },
   {
-    "id": "circuit_zolder",
-    "name": "Circuit Zolder",
-    "country": "BE",
-    "lat": 50.990237,
-    "lon": 5.2576657,
-    "zone": "FOREIGN",
-    "tags": {
-      "can_start": true,
-      "can_finish": true,
-      "mountain_finish": false,
-      "tt_ok": false
-    }
-  },
-  {
     "id": "clermont_ferrand",
     "name": "Clermont-Ferrand",
     "country": "FR",
@@ -3066,20 +3052,6 @@
     }
   },
   {
-    "id": "esch_sur_alzette",
-    "name": "Esch-sur-Alzette",
-    "country": "LU",
-    "lat": 49.5018674,
-    "lon": 5.9447341,
-    "zone": "FOREIGN",
-    "tags": {
-      "can_start": true,
-      "can_finish": true,
-      "mountain_finish": false,
-      "tt_ok": true
-    }
-  },
-  {
     "id": "eurotunnel",
     "name": "Eurotunnel",
     "country": "FR",
@@ -3334,10 +3306,10 @@
   {
     "id": "freiburg",
     "name": "Freiburg",
-    "country": "FR",
-    "lat": 48.7663036,
-    "lon": 6.8586785,
-    "zone": "FR_NE",
+    "country": "DE",
+    "lat": 47.9990,
+    "lon": 7.8421,
+    "zone": "FOREIGN",
     "tags": {
       "can_start": true,
       "can_finish": true,
@@ -3348,10 +3320,10 @@
   {
     "id": "fribourg",
     "name": "Fribourg",
-    "country": "FR",
-    "lat": 48.7663036,
-    "lon": 6.8586785,
-    "zone": "FR_NE",
+    "country": "CH",
+    "lat": 46.8065,
+    "lon": 7.1620,
+    "zone": "FOREIGN",
     "tags": {
       "can_start": true,
       "can_finish": true,

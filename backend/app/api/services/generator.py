@@ -56,6 +56,9 @@ class RouteGenerator:
 
         stages_history = []
 
+        paris_list = [loc for loc in all_finish_locations if loc.id.lower() == "paris"]
+        paris_location = paris_list[0] if paris_list else None
+
         for stage_num in range(1, request.stages + 1):
 
             in_foreign_block = stage_num <= number_foreign_stages
@@ -79,7 +82,14 @@ class RouteGenerator:
             if stage_num == 1:
                 stage_start_location = start_location
             else:
-                stage_start_location = self._select_start_location(in_foreign_block, start_locations, previous_location)
+                is_last_stage = (stage_num == request.stages)
+                stage_start_location = self._select_start_location(
+                    in_foreign_block, 
+                    start_locations, 
+                    previous_location,
+                    is_last_stage=is_last_stage,
+                    paris_location=paris_location
+                )
 
             transfer_km = (
                 self._calculate_transfer_distance(previous_location, stage_start_location)
@@ -95,7 +105,7 @@ class RouteGenerator:
                 mountain_finishes=mountain_finishes,
                 tt_locations=tt_locations,
                 all_finish_locations=all_finish_locations,
-                previous_location=previous_location
+                stage_start_location=stage_start_location
             )
 
             distance_km = self._calculate_stage_distance(stage_start_location, finish_location, stage_type)
@@ -201,7 +211,7 @@ class RouteGenerator:
         return streak >= 3
 
     def _select_finish_location(self, stage_type: StageType, stage_num: int, total_stages: int, in_foreign_block : bool, mountain_finishes: List[LocationEntity], tt_locations: List[LocationEntity], all_finish_locations: List[LocationEntity],
-            previous_location: LocationEntity) -> LocationEntity:
+            stage_start_location: LocationEntity) -> LocationEntity:
 
         # Last stage has to be Paris
         if stage_num == total_stages:
@@ -232,21 +242,21 @@ class RouteGenerator:
                 loc for loc in all_finish_locations if loc.zone != "FOREIGN"
             ]
 
-        is_finish_allowed = previous_location.tags.get("can_finish")
+        is_finish_allowed = stage_start_location.tags.get("can_finish")
 
         #Do not repeat location
         if stage_type == StageType.MOUNTAIN:
-            candidates = [loc for loc in candidates if loc.id != previous_location.id]
+            candidates = [loc for loc in candidates if loc.id != stage_start_location.id]
         elif stage_type == StageType.FLAT or stage_type == StageType.HILLY:
             if random.random() <= 0.1 and is_finish_allowed:
-                candidates = [previous_location]
+                candidates = [stage_start_location]
             else:
-                candidates = [loc for loc in candidates if loc.id != previous_location.id]
+                candidates = [loc for loc in candidates if loc.id != stage_start_location.id]
         else:
             if random.random() <= 0.4 and is_finish_allowed:
-                candidates = [previous_location]
+                candidates = [stage_start_location]
             else:
-                candidates = [loc for loc in candidates if loc.id != previous_location.id]
+                candidates = [loc for loc in candidates if loc.id != stage_start_location.id]
 
         if not candidates:
             candidates = all_finish_locations
@@ -259,13 +269,16 @@ class RouteGenerator:
             StageType.TTT: 60,
         }
 
-        return self._weighted_location_choice(previous_location, candidates, stage_type = stage_type, max_distance = max_distances.get(stage_type))
+        return self._weighted_location_choice(stage_start_location, candidates, stage_type = stage_type, max_distance = max_distances.get(stage_type))
 
-    def _select_start_location(self, in_foreign_block: bool, all_start_locations: List[LocationEntity], previous_location: LocationEntity) -> LocationEntity:
+    def _select_start_location(self, in_foreign_block: bool, all_start_locations: List[LocationEntity], previous_location: LocationEntity, is_last_stage: bool = False, paris_location: LocationEntity = None) -> LocationEntity:
         if in_foreign_block:
             candidates = [loc for loc in all_start_locations if loc.zone == "FOREIGN"]
         else:
             candidates = [loc for loc in all_start_locations if loc.zone != "FOREIGN"]
+
+        if is_last_stage and paris_location:
+            return self._weighted_location_choice(paris_location, candidates, max_distance = 150)
 
         return self._weighted_location_choice(previous_location, candidates, max_distance = 700)
 
