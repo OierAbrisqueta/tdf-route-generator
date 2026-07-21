@@ -34,6 +34,7 @@ class RouteGenerator:
         mountain_finishes = all_locations.get("mountain")
         tt_locations = all_locations.get("tt")
         all_finish_locations = all_locations.get("finish")
+        non_mountain_finish = all_locations.get("no_mountain")
 
         #Select initial location
         if request.foreign_start:
@@ -63,29 +64,13 @@ class RouteGenerator:
 
             in_foreign_block = stage_num <= number_foreign_stages
 
-            stage_type = self._determine_stage_type(
-                stage_num = stage_num,
-                total_stages = request.stages,
-                mountain_bias = request.mountain_bias,
-                itt_remaining = itt_remaining,
-                ttt_done = ttt_done,
-                recent_types = stages_history
-            )
-            stages_history.append(stage_type)
-
-            if stage_type == StageType.ITT:
-                itt_remaining -= 1
-            elif stage_type == StageType.TTT:
-                ttt_done = True
-                itt_remaining -= 1
-
             if stage_num == 1:
                 stage_start_location = start_location
             else:
                 is_last_stage = (stage_num == request.stages)
                 stage_start_location = self._select_start_location(
-                    in_foreign_block, 
-                    start_locations, 
+                    in_foreign_block,
+                    start_locations,
                     previous_location,
                     is_last_stage=is_last_stage,
                     paris_location=paris_location
@@ -97,6 +82,23 @@ class RouteGenerator:
                 else 0.0
             )
 
+            stage_type = self._determine_stage_type(
+                stage_num = stage_num,
+                total_stages = request.stages,
+                mountain_bias = request.mountain_bias,
+                itt_remaining = itt_remaining,
+                ttt_done = ttt_done,
+                recent_types = stages_history,
+                starting_location = stage_start_location,
+                mountain_finishes = mountain_finishes
+            )
+            stages_history.append(stage_type)
+
+            if stage_type == StageType.ITT:
+                itt_remaining -= 1
+            elif stage_type == StageType.TTT:
+                ttt_done = True
+
             finish_location = self._select_finish_location(
                 stage_type=stage_type,
                 stage_num=stage_num,
@@ -104,7 +106,7 @@ class RouteGenerator:
                 in_foreign_block=in_foreign_block,
                 mountain_finishes=mountain_finishes,
                 tt_locations=tt_locations,
-                all_finish_locations=all_finish_locations,
+                all_finish_locations=non_mountain_finish,
                 stage_start_location=stage_start_location
             )
 
@@ -155,24 +157,37 @@ class RouteGenerator:
             if loc.tags.get("tt_ok", False)
         ]
 
+        no_mountain =  [
+            loc for loc in all_locations
+            if not loc.tags.get("mountain_finish", False)
+        ]
+
         return {
             "start": start_locations,
             "finish": finish,
             "mountain": mountain,
-            "tt": tt
+            "tt": tt,
+            "no_mountain": no_mountain
         }
 
     def _get_locations_by_zone(self, zone: str) -> List[LocationEntity]:
         return self.location_repository.get_by_zone(zone)
 
     def _determine_stage_type(self, stage_num: int, total_stages: int, mountain_bias: float,
-            itt_remaining: int, ttt_done: bool, recent_types:  list[StageType]) -> StageType:
+            itt_remaining: int, ttt_done: bool, recent_types:  list[StageType], starting_location: LocationEntity,
+                              mountain_finishes: List[LocationEntity]) -> StageType:
 
         #Flat/Transition after mountain block
         if self._is_end_of_mountain_block(recent_types):
             return StageType.FLAT
 
         progress = stage_num / total_stages
+
+        can_mountain_finish = False
+        for loc in mountain_finishes:
+            if self._haversine(starting_location, loc) < 150:
+                can_mountain_finish = True
+                break
 
         #The first stage could be a ttt(team time trial)
         if stage_num == 1 and not ttt_done:
@@ -188,12 +203,12 @@ class RouteGenerator:
         if itt_remaining > 0 and stage_num == total_stages - 1:
             return StageType.ITT
 
-        is_mountain_block = (0.35 < progress < 0.55) or (0.7 < progress < 0.9)
+        is_mountain_block = (0.25 < progress < 0.55) or (0.65 < progress < 0.9)
         real_bias = mountain_bias * (2 if is_mountain_block else 0.5)
 
         #Determines the type based on the mountain_bias
         roll = random.random()
-        if roll < real_bias * 0.4:
+        if roll < real_bias and can_mountain_finish:
             return StageType.MOUNTAIN
         elif roll < real_bias * 0.4 + 0.3:
             return StageType.HILLY
@@ -264,7 +279,7 @@ class RouteGenerator:
         max_distances = {
             StageType.FLAT: 200,
             StageType.HILLY: 180,
-            StageType.MOUNTAIN: 150,
+            StageType.MOUNTAIN: 180,
             StageType.ITT: 60,
             StageType.TTT: 60,
         }
