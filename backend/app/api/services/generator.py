@@ -62,6 +62,7 @@ class RouteGenerator:
 
         for stage_num in range(1, request.stages + 1):
 
+            after_rest_day = stages[-1].rest_day_after if stages else False
             in_foreign_block = stage_num <= number_foreign_stages
 
             if stage_num == 1:
@@ -73,7 +74,8 @@ class RouteGenerator:
                     start_locations,
                     previous_location,
                     is_last_stage=is_last_stage,
-                    paris_location=paris_location
+                    paris_location=paris_location,
+                    after_rest_day=after_rest_day
                 )
 
             transfer_km = (
@@ -286,7 +288,8 @@ class RouteGenerator:
 
         return self._weighted_location_choice(stage_start_location, candidates, stage_type = stage_type, max_distance = max_distances.get(stage_type))
 
-    def _select_start_location(self, in_foreign_block: bool, all_start_locations: List[LocationEntity], previous_location: LocationEntity, is_last_stage: bool = False, paris_location: LocationEntity = None) -> LocationEntity:
+    def _select_start_location(self, in_foreign_block: bool, all_start_locations: List[LocationEntity], previous_location: LocationEntity,
+                               is_last_stage: bool = False, paris_location: LocationEntity = None, after_rest_day: bool = False) -> LocationEntity:
         if in_foreign_block:
             candidates = [loc for loc in all_start_locations if loc.zone == "FOREIGN"]
         else:
@@ -295,9 +298,12 @@ class RouteGenerator:
         if is_last_stage and paris_location:
             return self._weighted_location_choice(paris_location, candidates, max_distance = 150)
 
+        if after_rest_day:
+            return self._weighted_location_choice(previous_location, candidates, max_distance = 700, ideal_distance = 400)
+
         return self._weighted_location_choice(previous_location, candidates, max_distance = 700)
 
-    def _weighted_location_choice(self, previous_location, candidates, stage_type=None, max_distance=None):
+    def _weighted_location_choice(self, previous_location, candidates, stage_type = None, max_distance = None, ideal_distance = None):
         ideal_distances = {
             StageType.FLAT: 130,
             StageType.HILLY: 110,
@@ -305,7 +311,8 @@ class RouteGenerator:
             StageType.ITT: 25,
             StageType.TTT: 20,
         }
-        ideal_distance = ideal_distances.get(stage_type, 100) if stage_type else 50
+        if ideal_distance is None:
+            ideal_distance = ideal_distances.get(stage_type, 100) if stage_type else 50
         sigma = 50
 
         weights = []
