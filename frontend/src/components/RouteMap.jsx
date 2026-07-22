@@ -45,7 +45,7 @@ function getMapCenter(locations) {
   return [totalLat / locations.length, totalLon / locations.length]
 }
 
-function RouteMap({ stages = [] }) {
+function RouteMap({ stages = [], hoveredStageNumber }) {
   const locations = getLocations(stages)
   const center = getMapCenter(locations)
 
@@ -67,8 +67,25 @@ function RouteMap({ stages = [] }) {
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           />
 
-          {stages.map((stage) => {
+          {[...stages].sort((a, b) => {
+            if (hoveredStageNumber === a.stage_number) return 1;
+            if (hoveredStageNumber === b.stage_number) return -1;
+            return 0;
+          }).map((stage) => {
             const { stage_number, start_location, finish_location, stage_type } = stage
+            
+            const defaultColor = STAGE_COLOURS[stage_type];
+            let polylineColor = defaultColor;
+            let weight = 3;
+
+            if (hoveredStageNumber !== null && hoveredStageNumber !== undefined) {
+              if (hoveredStageNumber === stage_number) {
+                polylineColor = defaultColor;
+                weight = 5;
+              } else {
+                polylineColor = '#D1D5DB';
+              }
+            }
 
             return (
               <Polyline
@@ -77,7 +94,7 @@ function RouteMap({ stages = [] }) {
                   [start_location.lat, start_location.lon],
                   [finish_location.lat, finish_location.lon],
                 ]}
-                color={STAGE_COLOURS[stage_type]}
+                pathOptions={{ color: polylineColor, weight: weight }}
               />
             )
           })}

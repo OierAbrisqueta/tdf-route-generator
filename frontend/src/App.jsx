@@ -9,6 +9,7 @@ function App() {
   const [result, setResult] = useState(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
+  const [hoveredStageNumber, setHoveredStageNumber] = useState(null)
 
   const handleGenerate = async (settings) => {
     setLoading(true)
@@ -25,7 +26,6 @@ function App() {
 
   return (
     <div className="min-h-screen flex flex-col bg-tdf-bg selection:bg-tdf-yellow selection:text-tdf-text">
-      {/* Header - Sharp and Brutalist */}
       <header className="border-b-[3px] border-tdf-text bg-tdf-bg sticky top-0 z-50">
         <div className="w-full max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-12 py-4 flex items-center justify-between">
           <h1 className="text-4xl sm:text-5xl font-heading text-tdf-text tracking-wider m-0 leading-none">
@@ -64,8 +64,12 @@ function App() {
           <div className="min-w-0">
             {!loading && result && (
               <div className="space-y-12 animate-in fade-in duration-500">
-                <RouteMap stages={result.stages} />
-                <StageList stages={result.stages} />
+                <RouteMap stages={result.stages} hoveredStageNumber={hoveredStageNumber} />
+                <StageList 
+                  stages={result.stages} 
+                  hoveredStageNumber={hoveredStageNumber} 
+                  setHoveredStageNumber={setHoveredStageNumber} 
+                />
               </div>
             )}
             

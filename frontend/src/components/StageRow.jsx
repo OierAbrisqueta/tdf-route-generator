@@ -6,7 +6,7 @@ const TYPE_CONFIG = {
   TTT: 'bg-purple-200/60 text-purple-800'
 };
 
-function StageRow({ stage }) {
+function StageRow({ stage, isHovered, onMouseEnter, onMouseLeave }) {
   const {
     stage_number,
     stage_type,
@@ -21,7 +21,11 @@ function StageRow({ stage }) {
 
   return (
     <>
-      <tr className="hover:bg-tdf-bg/50 transition-colors">
+      <tr 
+        className={`transition-colors cursor-pointer ${isHovered ? 'bg-stone-200' : 'hover:bg-tdf-bg/50'}`}
+        onMouseEnter={onMouseEnter}
+        onMouseLeave={onMouseLeave}
+      >
         <td className="px-4 py-4 text-center">
           {/* Signature Element: Race Bib */}
           <div className="inline-flex flex-col items-center justify-center border-2 border-tdf-text bg-tdf-yellow w-12 h-10 shadow-[2px_2px_0_0_#1A1A1A] transform -rotate-2">

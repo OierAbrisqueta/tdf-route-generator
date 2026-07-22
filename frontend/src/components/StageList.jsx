@@ -1,6 +1,6 @@
 import StageRow from './StageRow'
 
-function StageList({ stages }) {
+function StageList({ stages, hoveredStageNumber, setHoveredStageNumber }) {
   return (
     <div className="border-t-[3px] border-tdf-text pt-8 mt-8">
       <div className="flex items-end justify-between mb-6">
@@ -22,7 +22,13 @@ function StageList({ stages }) {
             </thead>
             <tbody className="divide-y-[3px] divide-tdf-text/10">
               {stages.map((stage) => (
-                <StageRow key={stage.stage_number} stage={stage} />
+                <StageRow 
+                  key={stage.stage_number} 
+                  stage={stage} 
+                  isHovered={hoveredStageNumber === stage.stage_number}
+                  onMouseEnter={() => setHoveredStageNumber(stage.stage_number)}
+                  onMouseLeave={() => setHoveredStageNumber(null)}
+                />
               ))}
             </tbody>
           </table>
