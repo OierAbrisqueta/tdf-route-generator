@@ -28,6 +28,7 @@ class RouteGenerator:
 
         stages: List[Stage] = []
 
+        #Load Locations
         all_locations = self.load_locations()
 
         start_locations = all_locations.get("start")
@@ -44,13 +45,12 @@ class RouteGenerator:
             france_starts = [loc for loc in start_locations if loc.zone != "FOREIGN"]
             start_location = random.choice(france_starts) if france_starts else random.choice(start_locations)
 
-        #Determine the number of stages of the foreign start
+        #Determine the number of stages in the foreign start
         if request.foreign_start:
             number_foreign_stages = random.randint(request.foreign_stages_min, request.foreign_stages_max)
         else:
             number_foreign_stages = 0
 
-        #Generate stages
         previous_location = start_location
         itt_remaining = request.itt_count
         ttt_done = not request.ttt_enabled
@@ -138,6 +138,7 @@ class RouteGenerator:
         )
 
     def load_locations(self):
+        """Loads the locations to a dictionary"""
         all_locations = self.location_repository.get_locations()
         start_locations = [
             loc for loc in all_locations
@@ -178,6 +179,7 @@ class RouteGenerator:
     def _determine_stage_type(self, stage_num: int, total_stages: int, mountain_bias: float,
             itt_remaining: int, ttt_done: bool, recent_types:  list[StageType], starting_location: LocationEntity,
                               mountain_finishes: List[LocationEntity]) -> StageType:
+        """Determines the stage type"""
 
         #Flat/Transition after mountain block
         if self._is_end_of_mountain_block(recent_types):
@@ -185,6 +187,7 @@ class RouteGenerator:
 
         progress = stage_num / total_stages
 
+        #Can only be a mountain stage in case there is any climb nearby
         can_mountain_finish = False
         for loc in mountain_finishes:
             if self._haversine(starting_location, loc) < 150:
@@ -218,6 +221,7 @@ class RouteGenerator:
             return StageType.FLAT
 
     def _is_end_of_mountain_block(self, recent_types: list[StageType]):
+        """Destermines when a mountain block ends"""
         streak = 0
         for stage in reversed(recent_types):
             if stage == StageType.MOUNTAIN:
@@ -229,6 +233,7 @@ class RouteGenerator:
 
     def _select_finish_location(self, stage_type: StageType, stage_num: int, total_stages: int, in_foreign_block : bool, mountain_finishes: List[LocationEntity], tt_locations: List[LocationEntity], all_finish_locations: List[LocationEntity],
             stage_start_location: LocationEntity) -> LocationEntity:
+        """Selects finish location"""
 
         # Last stage has to be Paris
         if stage_num == total_stages:
@@ -290,6 +295,8 @@ class RouteGenerator:
 
     def _select_start_location(self, in_foreign_block: bool, all_start_locations: List[LocationEntity], previous_location: LocationEntity,
                                is_last_stage: bool = False, paris_location: LocationEntity = None, after_rest_day: bool = False) -> LocationEntity:
+        """Determines start location"""
+
         if in_foreign_block:
             candidates = [loc for loc in all_start_locations if loc.zone == "FOREIGN"]
         else:
@@ -304,6 +311,9 @@ class RouteGenerator:
         return self._weighted_location_choice(previous_location, candidates, max_distance = 700)
 
     def _weighted_location_choice(self, previous_location, candidates, stage_type = None, max_distance = None, ideal_distance = None):
+        """Selects the next location based on geographic distance"""
+
+        #Dictionary mapping stage types to their historically accurate transfer distances
         ideal_distances = {
             StageType.FLAT: 130,
             StageType.HILLY: 110,
@@ -316,21 +326,24 @@ class RouteGenerator:
         sigma = 50
 
         weights = []
+        #Calculate the probability weight for every candidate location
         for candidate in candidates:
             d = self._haversine(previous_location, candidate)
 
             if max_distance and d > max_distance:
                 weights.append(0.0)
                 continue
-
+            #Gaussian decay formula
             weight = math.exp(-0.5 * ((d - ideal_distance) / sigma) ** 2)
             if d > 250:
                 weight *= 0.05
             weights.append(weight)
 
+       #If all weights are 0, then the closest location is chosen
         if all(w == 0.0 for w in weights):
             return min(candidates, key=lambda loc: self._haversine(previous_location, loc))
 
+        #Randomly picks one candidate using the computed probability distribution
         return random.choices(candidates, weights=weights, k=1)[0]
 
     def _haversine(self, start, finish) -> float:
