@@ -3,6 +3,7 @@ name: Deploy static content to Pages
 on:
   push:
     branches: ['main']
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -35,8 +36,10 @@ jobs:
         working-directory: ./frontend
       
       - name: Build
+        # Pass the repository name as the base path to prevent 404s
         run: npm run build -- --base=/${{ github.event.repository.name }}/
         working-directory: ./frontend
+        # Inject your Render API URL at build time
         env:
           VITE_API_URL: https://tdf-route-generator-backend.onrender.com
       
