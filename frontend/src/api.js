@@ -1,5 +1,6 @@
 export async function generateRoute(settings) {
-  const res = await fetch('http://localhost:8000/generate', {
+  const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+  const res = await fetch(`${apiUrl}/generate`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(settings),
