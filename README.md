@@ -1,5 +1,7 @@
 # Tour de France Route Generator
 
+**Try the live application:** [oierabrisqueta.github.io/tdf-route-generator](https://oierabrisqueta.github.io/tdf-route-generator/)
+
 ## What this is and why I built it
 
 This project generates random but realistic Tour de France race routes. Instead of just picking random cities, the core of the project models route generation as a set of requirements to be met. 
